@@ -99,6 +99,14 @@ gh project item-edit --project-id $projectId --id $item.id --field-id $fieldId -
 - Mover apenas as issues que serão trabalhadas nesta iteração
 - Issues futuras do mesmo módulo permanecem em "Backlog" ou "Ready"
 
+**Ao concluir cada task:** mover a issue correspondente para **Done** e fechá-la:
+```powershell
+$item = (gh project item-list 5 --owner carloscampos2014 --format json | ConvertFrom-Json).items |
+        Where-Object { $_.content.number -eq <numero-da-issue> }
+gh project item-edit --project-id $projectId --id $item.id --field-id $fieldId --single-select-option-id "98236657"
+gh issue close <numero> --repo carloscampos2014/Calegrafia --comment "Task concluida."
+```
+
 ---
 
 ### Etapa 6 — Implementar
