@@ -20,7 +20,7 @@
     "padrao_captura_repeticoes": 3
   },
   "build": {
-    "command": "dotnet build Calegrafia.sln -c Debug",
+    "command": "dotnet build Calegrafia.slnx -c Debug",
     "test_command": "dotnet test tests/ --logger console;verbosity=minimal",
     "lint_command": "dotnet format --verify-no-changes"
   },

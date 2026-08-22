@@ -41,7 +41,7 @@ Consultar antes de implementar qualquer feature. Referência completa: `docs/vis
 ## Estrutura de Solução
 
 ```
-Calegrafia.sln
+Calegrafia.slnx          # formato moderno XML (requer .NET 10 SDK)
 ├── src/
 │   ├── Calegrafia.App/           # Projeto MAUI (frontend iOS/Android/Windows)
 │   ├── Calegrafia.Api/           # ASP.NET Core Web API
@@ -238,7 +238,7 @@ O app funciona **online e offline**. Estratégia por tipo de dado:
 
 ```powershell
 # Build completo
-dotnet build Calegrafia.sln -c Debug
+dotnet build Calegrafia.slnx -c Debug
 
 # Testes
 dotnet test tests/ --logger "console;verbosity=minimal"
