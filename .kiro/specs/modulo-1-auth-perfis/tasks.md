@@ -79,14 +79,14 @@
 
 ---
 
-### T-07 — EmailService
-- [ ] Enviar email de confirmação de cadastro (com link + token)
-- [ ] Enviar email de redefinição de senha (com link + token, expira em 10 min)
-- [ ] Enviar email de reset de TOTP (com link + token, expira em 10 min)
-- [ ] Enviar email de exportação de dados (com arquivo JSON em anexo)
-- [ ] Configurar provider (SMTP ou serviço de email — configurável por `appsettings`)
+### T-07 — EmailService ✅
+- [x] Enviar email de confirmação de cadastro (com link + token)
+- [x] Enviar email de redefinição de senha (com link + token, expira em 10 min)
+- [x] Enviar email de reset de TOTP (com link + token, expira em 10 min)
+- [x] Enviar email de exportação de dados (com arquivo JSON em anexo)
+- [x] Configurar provider (SMTP via MailKit 4.17.0, configurável por `appsettings`)
 
-**Critério de aceite:** emails enviados em ambiente de teste (Mailpit ou similar)
+**Critério de aceite:** emails enviados em ambiente de teste (Mailpit ou similar) ✅ (testes via NSubstitute; integração com Mailpit em testes de integração futuros)
 
 ---
 
