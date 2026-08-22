@@ -72,7 +72,36 @@ O agente DEVE pausar e aguardar o usuário dizer: "aprovado", "pode implementar"
 
 ---
 
-### Etapa 5 — Implementar
+### Etapa 5 — Mover issue(s) para "In Progress" no GitHub Project
+
+Antes de iniciar a implementação, mover as issues relacionadas ao módulo/feature para **In Progress** no GitHub Project #5 (Enzojb Calegrafia):
+
+```powershell
+# IDs do projeto Calegrafia
+$projectId    = "PVT_kwHOAHxQCM4BhG5H"
+$fieldId      = "PVTSSF_lAHOAHxQCM4BhG5HzhgD73A"
+
+# Status IDs
+# Backlog:     f75ad846
+# Ready:       61e4505c
+# In progress: 47fc9ee4
+# In review:   df73e18b
+# Done:        98236657
+
+$inProgressId = "47fc9ee4"
+
+# Buscar o item da issue e mover para In Progress
+$item = (gh project item-list 5 --owner carloscampos2014 --format json | ConvertFrom-Json).items |
+        Where-Object { $_.title -like "*<titulo-da-issue>*" }
+gh project item-edit --project-id $projectId --id $item.id --field-id $fieldId --single-select-option-id $inProgressId
+```
+
+- Mover apenas as issues que serão trabalhadas nesta iteração
+- Issues futuras do mesmo módulo permanecem em "Backlog" ou "Ready"
+
+---
+
+### Etapa 6 — Implementar
 
 - Seguir a stack definida: **.NET MAUI** (frontend iOS/Android/Windows) + **ASP.NET Core** (backend API) + **PostgreSQL** (banco)
 - Backend exposto via **Nginx** na VM, domínio configurado no **Cloudflare**
@@ -86,7 +115,7 @@ O agente DEVE pausar e aguardar o usuário dizer: "aprovado", "pode implementar"
 
 ---
 
-### Etapa 6 — Commit por feature/tarefa implementada
+### Etapa 7 — Commit por feature/tarefa implementada
 
 ```powershell
 git add <arquivos-relevantes>
@@ -104,7 +133,7 @@ Incluir `#N` quando o commit avança ou fecha uma issue.
 
 ---
 
-### Etapa 7 — Verificar build e testes
+### Etapa 7 — Commit por feature/tarefa implementada
 
 Após cada commit (ou grupo coeso), verificar:
 
@@ -122,7 +151,7 @@ dotnet test tests/ --logger "console;verbosity=minimal"
 
 ---
 
-### Etapa 8 — Avaliar necessidade de testes manuais
+### Etapa 8 — Verificar build e testes
 
 Após verificação automatizada, avaliar se há cenários que precisam de validação manual:
 
@@ -135,7 +164,7 @@ Se testes manuais forem necessários, informar o usuário e aguardar confirmaç�
 
 ---
 
-### Etapa 9 — Atualizar documentação
+### Etapa 9 — Avaliar necessidade de testes manuais
 
 Antes do push, atualizar a documentação afetada:
 
@@ -151,7 +180,7 @@ git commit -m "docs: atualizar documentacao para modulo-X"
 
 ---
 
-### Etapa 10 — Push da branch
+### Etapa 10 — Atualizar documentação
 
 Somente após build, testes e documentação atualizados:
 
@@ -161,7 +190,7 @@ git push origin feature/<nome>
 
 ---
 
-### Etapa 11 — Criar Pull Request
+### Etapa 11 — Push da branch
 
 ```powershell
 gh pr create `
@@ -179,7 +208,7 @@ gh pr create `
 
 ---
 
-### Etapa 12 — Após merge: limpar repositório local
+### Etapa 13 — Após merge: limpar repositório local
 
 Quando o usuário sinalizar que o PR foi mergeado:
 
