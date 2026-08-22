@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Git Safety Guardrails",
+      "trigger": "PreToolUse",
+      "description": "Bloqueia comandos git destrutivos: push --force, reset --hard, rm -rf na raiz, push direto para main/master",
+      "matcher": "execute_pwsh|execute_bash",
+      "action": {
+        "type": "agent",
+        "prompt": "Um comando shell está prestes a ser executado. Analise o comando e verifique se ele contém alguma das operações proibidas abaixo:\n\nPROIBIDO sem instrução explícita do usuário:\n- `git push --force` ou `git push -f`\n- `git reset --hard`\n- `git clean -fd` ou `git clean -f`\n- `git branch -D` (deletar branch local à força)\n- `rm -rf` na raiz do projeto ou em pastas de código-fonte\n- `git push` diretamente para `main` ou `master` (deve criar branch e PR)\n- Qualquer comando que sobrescreva `.env`, `secrets`, `credentials` ou arquivos de chave\n\nSe encontrar uma operação proibida: bloqueie com exit 2 e explique qual regra foi violada e como proceder de forma segura.\nSe o comando for seguro: deixe passar normalmente (exit 0)."
+      }
+    }
+  ]
+}
