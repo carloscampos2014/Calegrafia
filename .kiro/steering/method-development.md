@@ -1,6 +1,5 @@
 ﻿---
-inclusion: manual
-description: "Loop estruturado de 7 passos para implementação — aplique sempre que implementar feature, corrigir bug ou refatorar"
+inclusion: always
 ---
 
 # Method: Desenvolvimento
