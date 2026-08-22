@@ -2,12 +2,12 @@
   "version": "v1",
   "hooks": [
     {
-      "name": "Validação de Conclusão de Task",
+      "name": "Validação de Conclusão + Fechar Issue",
       "trigger": "PostTaskExec",
-      "description": "Verifica se a task concluída atende todos os critérios de aceite do spec antes de marcar como pronta",
+      "description": "Ao concluir uma task: valida critérios de aceite, move a issue para Done e fecha no GitHub",
       "action": {
         "type": "agent",
-        "prompt": "Uma task de spec acabou de ser marcada como concluída. Faça a validação de conclusão:\n\n1. Leia os critérios de aceite da task em `.kiro/specs/<feature>/requirements.md`\n2. Para cada critério de aceite, verifique se há evidência de implementação no código\n3. Verifique se o build passa e os testes estão verdes\n4. Registre o resultado em `.kiro/quality/history.json` se o componente quality_reporting estiver ativo\n\nReporte no formato:\n```\n✅ Task [N] — Validação de Conclusão\nCritérios atendidos: [N]/[total]\n[lista de critérios com ✅ ou ❌]\nBuild: ✅/❌ | Testes: ✅ [N] passando / ❌ [N] falhando\n[Se algum critério não atendido]: Ação necessária: [descrição]\n```\n\nSe a task não atender todos os critérios, marcar como pendente e detalhar o que falta."
+        "prompt": "Uma task de spec acabou de ser marcada como concluída. Execute os seguintes passos:\n\n**1. Validar critérios de aceite**\n- Leia os critérios de aceite da task em `.kiro/specs/<feature>/requirements.md`\n- Para cada critério, verifique se há evidência de implementação no código\n- Verifique se o build passa e os testes estão verdes\n\nReporte no formato:\n```\n✅ Task [N] — Validação de Conclusão\nCritérios atendidos: [N]/[total]\n[lista de critérios com ✅ ou ❌]\nBuild: ✅/❌ | Testes: ✅ [N] passando / ❌ [N] falhando\n```\n\n**2. Mover a issue para \"Done\" e fechá-la no GitHub**\n\nSe todos os critérios forem atendidos, identifique o número da issue pela correspondência com o título da task (padrão `[M1-TXX]`) e execute:\n\n```powershell\n$projectId = \"PVT_kwHOAHxQCM4BhG5H\"\n$fieldId   = \"PVTSSF_lAHOAHxQCM4BhG5HzhgD73A\"\n$doneId    = \"98236657\"\n\n$item = (gh project item-list 5 --owner carloscampos2014 --format json | ConvertFrom-Json).items |\n        Where-Object { $_.title -like \"*T0X*\" }   # substituir T0X pelo número correto\ngh project item-edit --project-id $projectId --id $item.id --field-id $fieldId --single-select-option-id $doneId\ngh issue close <numero> --repo carloscampos2014/Calegrafia --comment \"Task concluida com todos os criterios de aceite atendidos.\"\n```\n\nSe algum critério não for atendido:\n- NÃO mover para Done nem fechar a issue\n- Marcar a task como pendente e detalhar o que falta"
       }
     }
   ]

@@ -2,12 +2,12 @@
   "version": "v1",
   "hooks": [
     {
-      "name": "Verificação de Spec antes da Task",
+      "name": "Spec Check + Move Issue para In Progress",
       "trigger": "PreTaskExec",
-      "description": "Lê o spec da feature antes de iniciar uma task para garantir alinhamento com requisitos e critérios de aceite",
+      "description": "Ao iniciar uma task: lê o spec, reporta escopo e move a issue correspondente para In Progress no GitHub Project #5",
       "action": {
         "type": "agent",
-        "prompt": "Uma task de spec está prestes a ser iniciada. Antes de começar a implementação:\n\n1. Localize o arquivo `requirements.md` e `design.md` da spec atual em `.kiro/specs/`\n2. Leia os critérios de aceite da task que será executada\n3. Confirme que entendeu o escopo exato da task — o que deve ser implementado E o que está fora do escopo\n4. Verifique se há dependências com tasks anteriores não concluídas\n\nReporte em 3-5 linhas:\n- O que esta task deve entregar\n- Critérios de aceite que serão verificados\n- Qualquer dependência ou bloqueador identificado\n\nSe não houver spec para a task atual, informe e prossiga normalmente."
+        "prompt": "Uma task de spec está prestes a ser iniciada. Execute os seguintes passos:\n\n**1. Ler o spec**\n- Localize o arquivo `requirements.md` e `design.md` da spec atual em `.kiro/specs/`\n- Leia os critérios de aceite da task que será executada\n- Confirme o escopo exato: o que deve ser implementado e o que está fora do escopo\n- Verifique se há dependências com tasks anteriores não concluídas\n\n**2. Reportar em 3-5 linhas:**\n- O que esta task deve entregar\n- Critérios de aceite que serão verificados\n- Qualquer dependência ou bloqueador identificado\n\n**3. Mover a issue correspondente para \"In Progress\" no GitHub Project #5**\n\nIdentifique o número da issue pela correspondência entre o título da task e os títulos das issues (padrão `[M1-TXX]`). Depois execute:\n\n```powershell\n$projectId = \"PVT_kwHOAHxQCM4BhG5H\"\n$fieldId   = \"PVTSSF_lAHOAHxQCM4BhG5HzhgD73A\"\n$inProgressId = \"47fc9ee4\"\n\n$item = (gh project item-list 5 --owner carloscampos2014 --format json | ConvertFrom-Json).items |\n        Where-Object { $_.title -like \"*T0X*\" }   # substituir T0X pelo número correto\ngh project item-edit --project-id $projectId --id $item.id --field-id $fieldId --single-select-option-id $inProgressId\n```\n\nSe não encontrar a issue correspondente, informe e prossiga normalmente.\nSe não houver spec para a task atual, informe e prossiga normalmente."
       }
     }
   ]
