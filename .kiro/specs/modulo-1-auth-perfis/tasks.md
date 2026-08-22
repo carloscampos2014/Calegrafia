@@ -59,12 +59,13 @@
 
 ## Grupo 3 — Serviços de infraestrutura
 
-### T-05 — JwtService
-- [ ] Gerar access token (RS256, 15 min, claims: sub, email, perfil_id)
-- [ ] Gerar refresh token (string aleatória segura, 30 dias)
-- [ ] Validar e decodificar access token
+### T-05 — JwtService ✅
+- [x] Gerar access token (RS256, 15 min, claims: sub, email, perfil_id)
+- [x] Gerar refresh token (string aleatória segura, 30 dias)
+- [x] Validar e decodificar access token
+- [x] `MapInboundClaims = false` para preservar nomes originais de claims
 
-**Critério de aceite:** testes unitários validam geração e validação de tokens
+**Critério de aceite:** testes unitários validam geração e validação de tokens ✅ (12 testes passando)
 
 ---
 
