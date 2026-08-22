@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Calegrafia.Api/Calegrafia.Api.csproj" />
+    <Project Path="src/Calegrafia.App/Calegrafia.App.csproj" />
+    <Project Path="src/Calegrafia.Application/Calegrafia.Application.csproj" />
+    <Project Path="src/Calegrafia.Domain/Calegrafia.Domain.csproj" />
+    <Project Path="src/Calegrafia.Infrastructure/Calegrafia.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Calegrafia.Api.Tests/Calegrafia.Api.Tests.csproj" />
+    <Project Path="tests/Calegrafia.Application.Tests/Calegrafia.Application.Tests.csproj" />
+  </Folder>
+</Solution>

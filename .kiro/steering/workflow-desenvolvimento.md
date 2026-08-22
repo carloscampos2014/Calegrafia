@@ -218,6 +218,8 @@ gh pr create `
 
 ### Etapa 13 — Após merge: limpar repositório local
 
+**O PR é mergeado pelo usuário — o agente NUNCA faz merge de PR automaticamente.**
+
 Quando o usuário sinalizar que o PR foi mergeado:
 
 ```powershell
