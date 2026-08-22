@@ -28,6 +28,8 @@ Consultar antes de implementar qualquer feature. Referência completa: `docs/vis
 | Frontend / App | .NET MAUI | iOS + Android + Windows num único codebase |
 | Backend API | ASP.NET Core | RESTful, hospedado na VM |
 | Banco de dados | PostgreSQL | Rodando localmente na VM |
+| ORM / Acesso a dados | Dapper | Queries SQL explícitas, sem ORM gerador |
+| Migrations | DbUp | Scripts SQL versionados em `src/Calegrafia.Infrastructure/Migrations/` |
 | Proxy reverso | Nginx | Expõe a API via HTTPS |
 | DNS / CDN / SSL | Cloudflare | Aponta para a VM |
 | Autenticação | JWT + Identity | Email/senha + social login + MFA opcional (TOTP) |
@@ -73,9 +75,13 @@ Calegrafia.sln
 - Sem dependências de infraestrutura no domínio
 
 ### Banco de Dados
-- Migrations versionadas via EF Core — sem DDL manual
+- **Dapper** para acesso a dados — SQL explícito, sem geração automática de queries
+- **DbUp** para migrations — scripts `.sql` versionados, executados em ordem pelo nome do arquivo
+- Padrão de nomenclatura dos scripts: `V001__descricao.sql`, `V002__descricao.sql`
+- Scripts ficam em `src/Calegrafia.Infrastructure/Migrations/`
 - Naming: tabelas em `snake_case`, ex: `perfis_usuario`, `licoes`, `transacoes_moeda`
 - Ledger de moeda: tabela `transacoes_moeda` **imutável** — apenas INSERT, nunca UPDATE/DELETE
+- **Nunca usar EF Core** — não adicionar pacotes `Microsoft.EntityFrameworkCore.*`
 
 ---
 
@@ -157,7 +163,7 @@ Os 3 tipos de letra (cursiva, forma, técnica) se aplicam a todas as categorias.
 - JWT: expiração curta com refresh token
 - MFA: TOTP (Google Authenticator / Authy compatível) — opt-in por usuário
 - Senhas: hash com BCrypt (nunca MD5/SHA1)
-- SQL: sempre via EF Core parametrizado — sem string concatenation em queries
+- SQL: sempre via Dapper com parâmetros — sem string concatenation em queries
 
 ---
 
@@ -170,9 +176,9 @@ dotnet build Calegrafia.sln -c Debug
 # Testes
 dotnet test tests/ --logger "console;verbosity=minimal"
 
-# Migrations (quando banco estiver configurado)
-dotnet ef migrations add <Nome> --project src/Calegrafia.Infrastructure
-dotnet ef database update --project src/Calegrafia.Infrastructure
+# Migrations via DbUp — executadas automaticamente no startup da API
+# Para adicionar uma nova migration: criar arquivo SQL em:
+# src/Calegrafia.Infrastructure/Migrations/V00N__descricao.sql
 ```
 
 ---
