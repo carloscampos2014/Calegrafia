@@ -123,11 +123,14 @@
 
 ---
 
-### T-11 — Social login (RF-04)
-- [ ] `LoginSocialCommand` — validar token do provedor (Google/Apple), vincular ou criar conta
-- [ ] Integração com Google Identity: verificar `id_token` via JWKS
-- [ ] Integração com Apple Sign In: verificar token Apple
-- [ ] Teste TDD: novo usuário, usuário existente com mesmo email
+### T-11 — Social login (RF-04) ✅
+- [x] `LoginSocialCommand/Handler` — validar token via ISocialLoginProvider, criar ou vincular conta
+- [x] `ISocialLoginProvider` — abstração DIP para Google e Apple (implementações na Infrastructure)
+- [x] `IProvedorSocialRepository` — vincular provedor social à conta
+- [x] `SocialUserInfo` record separado
+- [x] Teste TDD: provedor inválido, token inválido, novo usuário, usuário existente com mesmo email
+
+**Critério de aceite:** testes TDD passando ✅ (89 testes, +8 novos)
 
 ---
 
