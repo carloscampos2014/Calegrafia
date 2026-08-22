@@ -92,10 +92,13 @@
 
 ## Grupo 4 — Use cases de autenticação
 
-### T-08 — Cadastro e confirmação de email (RF-01, RF-12)
-- [ ] `CadastrarContaCommand` — validar email único, hash de senha, gravar consentimento, enviar email
-- [ ] `ConfirmarEmailCommand` — validar token, ativar conta, marcar token como usado
-- [ ] Teste TDD: cadastro com email duplicado, senha fraca, cadastro sem aceitar termos
+### T-08 — Cadastro e confirmação de email (RF-01, RF-12) ✅
+- [x] `CadastrarContaCommand` — validar email único, hash de senha, gravar consentimento, enviar email
+- [x] `ConfirmarEmailCommand` — validar token, ativar conta, marcar token como usado
+- [x] `IPasswordHasher` + `BcryptPasswordHasher` (fator 12)
+- [x] Testes TDD: email duplicado, senha fraca, sem aceitar termos, token expirado/usado
+
+**Critério de aceite:** testes TDD passando ✅ (59 testes, +23 novos)
 
 ---
 
