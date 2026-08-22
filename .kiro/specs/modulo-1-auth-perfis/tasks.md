@@ -34,13 +34,14 @@
 
 ## Grupo 2 — Domínio e repositórios
 
-### T-03 — Entidades e value objects do domínio
-- [ ] `Email` (value object com validação de formato)
-- [ ] `Conta` (entidade com lógica: bloquear, ativar, verificar tentativas)
-- [ ] `Perfil` (entidade com flags `IsInfantil`, `UsaLibras`)
-- [ ] Interfaces: `IContaRepository`, `IPerfilRepository`
+### T-03 — Entidades e value objects do domínio ✅
+- [x] `Email` (value object com validação de formato)
+- [x] `Conta` (entidade com lógica: bloquear, ativar, verificar tentativas)
+- [x] `Perfil` (entidade com flags `IsInfantil`, `UsaLibras`)
+- [x] Interfaces: `IContaRepository`, `IPerfilRepository`
+- [x] `Result<T>` e `Result` (pattern para erros de domínio sem exceções)
 
-**Critério de aceite:** testes unitários para `Email` e lógica de bloqueio de `Conta`
+**Critério de aceite:** testes unitários para `Email` e lógica de bloqueio de `Conta` ✅
 
 ---
 
