@@ -20,9 +20,11 @@
     "padrao_captura_repeticoes": 3
   },
   "build": {
-    "command": "dotnet build Calegrafia.slnx -c Debug",
+    "command": "dotnet build src/Calegrafia.Api/Calegrafia.Api.csproj src/Calegrafia.Application/Calegrafia.Application.csproj -c Debug --no-restore --nologo -v quiet",
+    "full_command": "dotnet build Calegrafia.slnx -c Debug",
     "test_command": "dotnet test tests/ --logger console;verbosity=minimal",
-    "lint_command": "dotnet format --verify-no-changes"
+    "lint_command": "dotnet format --verify-no-changes",
+    "note": "build usa projetos backend apenas para verificacao rapida; full_command para build completo incluindo MAUI"
   },
   "repo": {
     "owner": "carloscampos2014",

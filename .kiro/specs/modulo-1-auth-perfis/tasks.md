@@ -45,15 +45,15 @@
 
 ---
 
-### T-04 — Repositórios com Dapper
-- [ ] `ContaRepository` — CRUD + busca por email + controle de tentativas
-- [ ] `PerfilRepository` — CRUD + listagem por conta + contagem de perfis
-- [ ] `RefreshTokenRepository` — inserir, revogar, revogar todos, buscar por token
-- [ ] `TokenConfirmacaoRepository` — inserir, marcar como usado, buscar por token
-- [ ] `ConsentimentoRepository` — INSERT only
-- [ ] `LogAutenticacaoRepository` — INSERT + anonimizar por conta_id
+### T-04 — Repositórios com Dapper ✅
+- [x] `ContaRepository`
+- [x] `PerfilRepository`
+- [x] `RefreshTokenRepository`
+- [x] `TokenConfirmacaoRepository`
+- [x] `ConsentimentoRepository` (INSERT only)
+- [x] `LogAutenticacaoRepository`
 
-**Critério de aceite:** testes de integração com banco real ou in-memory confirmam as queries
+**Critério de aceite:** testes de integração com banco real ou in-memory confirmam as queries ✅
 
 ---
 
