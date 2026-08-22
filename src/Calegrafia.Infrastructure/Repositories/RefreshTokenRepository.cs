@@ -1,9 +1,10 @@
+using Calegrafia.Domain.Interfaces;
 using Dapper;
 using Npgsql;
 
 namespace Calegrafia.Infrastructure.Repositories;
 
-public sealed class RefreshTokenRepository
+public sealed class RefreshTokenRepository : IRefreshTokenRepository
 {
     private readonly string _connectionString;
 
@@ -28,7 +29,7 @@ public sealed class RefreshTokenRepository
             cancellationToken: ct));
     }
 
-    public async Task<RefreshTokenRow?> ObterPorTokenAsync(string token, CancellationToken ct = default)
+    public async Task<RefreshTokenData?> ObterPorTokenAsync(string token, CancellationToken ct = default)
     {
         const string sql = """
             SELECT id, conta_id, token, expira_em, revogado, dispositivo, criado_em
@@ -37,7 +38,7 @@ public sealed class RefreshTokenRepository
             """;
 
         await using var conn = CreateConnection();
-        return await conn.QuerySingleOrDefaultAsync<RefreshTokenRow>(new CommandDefinition(sql, new { Token = token }, cancellationToken: ct));
+        return await conn.QuerySingleOrDefaultAsync<RefreshTokenData>(new CommandDefinition(sql, new { Token = token }, cancellationToken: ct));
     }
 
     public async Task RevogarAsync(string token, CancellationToken ct = default)
@@ -53,13 +54,4 @@ public sealed class RefreshTokenRepository
         await using var conn = CreateConnection();
         await conn.ExecuteAsync(new CommandDefinition(sql, new { ContaId = contaId }, cancellationToken: ct));
     }
-
-    public sealed record RefreshTokenRow(
-        Guid Id,
-        Guid ContaId,
-        string Token,
-        DateTime ExpiraEm,
-        bool Revogado,
-        string? Dispositivo,
-        DateTime CriadoEm);
 }

@@ -1,9 +1,10 @@
+using Calegrafia.Domain.Interfaces;
 using Dapper;
 using Npgsql;
 
 namespace Calegrafia.Infrastructure.Repositories;
 
-public sealed class TokenConfirmacaoRepository
+public sealed class TokenConfirmacaoRepository : ITokenConfirmacaoRepository
 {
     private readonly string _connectionString;
 
@@ -28,16 +29,16 @@ public sealed class TokenConfirmacaoRepository
             cancellationToken: ct));
     }
 
-    public async Task<TokenConfirmacaoRow?> ObterPorTokenAsync(string token, CancellationToken ct = default)
+    public async Task<TokenConfirmacaoData?> ObterPorTokenAsync(string token, CancellationToken ct = default)
     {
         const string sql = """
-            SELECT id, conta_id, tipo, token, expira_em, usado, criado_em
+            SELECT id, conta_id, token, tipo, expira_em, usado, criado_em
             FROM tokens_confirmacao
             WHERE token = @Token
             """;
 
         await using var conn = CreateConnection();
-        return await conn.QuerySingleOrDefaultAsync<TokenConfirmacaoRow>(new CommandDefinition(sql, new { Token = token }, cancellationToken: ct));
+        return await conn.QuerySingleOrDefaultAsync<TokenConfirmacaoData>(new CommandDefinition(sql, new { Token = token }, cancellationToken: ct));
     }
 
     public async Task MarcarComoUsadoAsync(Guid id, CancellationToken ct = default)
@@ -45,18 +46,5 @@ public sealed class TokenConfirmacaoRepository
         const string sql = "UPDATE tokens_confirmacao SET usado = TRUE WHERE id = @Id";
         await using var conn = CreateConnection();
         await conn.ExecuteAsync(new CommandDefinition(sql, new { Id = id }, cancellationToken: ct));
-    }
-
-    public sealed record TokenConfirmacaoRow(
-        Guid Id,
-        Guid ContaId,
-        string Tipo,
-        string Token,
-        DateTime ExpiraEm,
-        bool Usado,
-        DateTime CriadoEm)
-    {
-        public bool EstaExpirado() => DateTime.UtcNow > ExpiraEm;
-        public bool EstaValido() => !Usado && !EstaExpirado();
     }
 }

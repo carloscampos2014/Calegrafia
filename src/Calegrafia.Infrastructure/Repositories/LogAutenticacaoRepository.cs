@@ -1,9 +1,10 @@
+using Calegrafia.Domain.Interfaces;
 using Dapper;
 using Npgsql;
 
 namespace Calegrafia.Infrastructure.Repositories;
 
-public sealed class LogAutenticacaoRepository
+public sealed class LogAutenticacaoRepository : ILogAutenticacaoRepository
 {
     private readonly string _connectionString;
 

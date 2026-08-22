@@ -1,3 +1,4 @@
+using Calegrafia.Domain.Interfaces;
 using Dapper;
 using Npgsql;
 
@@ -7,7 +8,7 @@ namespace Calegrafia.Infrastructure.Repositories;
 /// Repositório imutável (LGPD) — apenas INSERT.
 /// Nunca atualizar ou deletar registros de consentimento.
 /// </summary>
-public sealed class ConsentimentoRepository
+public sealed class ConsentimentoRepository : IConsentimentoRepository
 {
     private readonly string _connectionString;
 
