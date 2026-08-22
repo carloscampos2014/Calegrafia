@@ -69,13 +69,13 @@
 
 ---
 
-### T-06 — TotpService
-- [ ] Gerar secret TOTP (Base32)
-- [ ] Gerar URI para QR code (otpauth://)
-- [ ] Validar código TOTP (RFC 6238, janela de 1 passo)
-- [ ] Criptografar/descriptografar secret em repouso (AES-256)
+### T-06 — TotpService (RFC 6238 + AES-256) ✅
+- [x] Gerar secret TOTP (Base32)
+- [x] Gerar URI para QR code (otpauth://)
+- [x] Validar código TOTP (RFC 6238, janela de 1 passo)
+- [x] Criptografar/descriptografar secret em repouso (AES-256-CBC, IV aleatório)
 
-**Critério de aceite:** testes unitários validam geração e verificação de códigos TOTP
+**Critério de aceite:** testes unitários validam geração e verificação de códigos TOTP ✅ (16 testes passando)
 
 ---
 
