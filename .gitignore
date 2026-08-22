@@ -1,0 +1,69 @@
+# ==============================================
+# Arquivos de sessão e configurações locais
+# ==============================================
+
+# Sessões do agente Kiro (histórico de sessões locais)
+.kiro/knowledge/sessions/
+
+# Configurações MCP (contém tokens e endpoints locais)
+.kiro/settings/mcp.json
+
+# Cache de modelos de embedding
+models_cache/
+
+# Banco de dados vetorial local
+data/chroma_db/
+data/index_metadata.json
+
+# ==============================================
+# Python
+# ==============================================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ==============================================
+# Ambiente e segredos
+# ==============================================
+.env
+.env.*
+!.env.example
+*.secret
+secrets.*
+
+# ==============================================
+# IDEs e editores
+# ==============================================
+.vscode/settings.json
+.vscode/*.code-workspace
+.idea/
+*.suo
+*.user
+*.swp
+*~
+
+# ==============================================
+# Sistema operacional
+# ==============================================
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ==============================================
+# Logs e temporários
+# ==============================================
+*.log
+*.tmp
+*.temp
+logs/
