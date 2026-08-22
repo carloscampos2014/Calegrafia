@@ -113,11 +113,13 @@
 
 ---
 
-### T-10 — Refresh token e logout (RF-03, RF-06)
-- [ ] `RefreshTokenCommand` — validar token, verificar expiração e revogação, emitir novo access token
-- [ ] `LogoutCommand` — revogar refresh token fornecido
-- [ ] `LogoutTodosCommand` — revogar todos os refresh tokens da conta
-- [ ] Teste TDD: refresh válido, token expirado, token revogado, logout e tentativa de re-uso
+### T-10 — Refresh token e logout (RF-03, RF-06) ✅
+- [x] `RefreshTokenCommand/Handler` — rotação de token (revoga atual, emite novo)
+- [x] `LogoutCommand/Handler` — revogar refresh token (idempotente)
+- [x] `LogoutTodosCommand/Handler` — revogar todos os refresh tokens da conta
+- [x] Teste TDD: refresh válido, token expirado, token revogado, logout e tentativa de re-uso
+
+**Critério de aceite:** testes TDD passando ✅ (81 testes, +10 novos)
 
 ---
 
