@@ -7,16 +7,3 @@ public interface IRefreshTokenRepository
     Task RevogarAsync(string token, CancellationToken ct = default);
     Task RevogarTodosPorContaAsync(Guid contaId, CancellationToken ct = default);
 }
-
-public sealed record RefreshTokenData(
-    Guid Id,
-    Guid ContaId,
-    string Token,
-    DateTime ExpiraEm,
-    bool Revogado,
-    string? Dispositivo,
-    DateTime CriadoEm)
-{
-    public bool EstaExpirado() => DateTime.UtcNow > ExpiraEm;
-    public bool EstaValido() => !Revogado && !EstaExpirado();
-}

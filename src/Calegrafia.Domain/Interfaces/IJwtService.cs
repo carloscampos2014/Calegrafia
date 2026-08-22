@@ -11,9 +11,3 @@ public interface IJwtService
     /// <summary>Valida e decodifica um access token. Retorna null se inválido ou expirado.</summary>
     TokenPayload? ValidarAccessToken(string token);
 }
-
-public sealed record TokenPayload(
-    Guid ContaId,
-    string Email,
-    Guid? PerfilId,
-    DateTime ExpiraEm);
