@@ -19,16 +19,16 @@
 
 ---
 
-### T-02 — Migrations do banco de dados
-- [ ] V001 — Criar tabela `contas`
-- [ ] V002 — Criar tabela `provedores_sociais`
-- [ ] V003 — Criar tabela `tokens_confirmacao`
-- [ ] V004 — Criar tabela `refresh_tokens`
-- [ ] V005 — Criar tabela `perfis`
-- [ ] V006 — Criar tabela `consentimentos`
-- [ ] V007 — Criar tabela `logs_autenticacao`
+### T-02 — Migrations do banco de dados ✅
+- [x] V001 — Criar tabela `contas`
+- [x] V002 — Criar tabela `provedores_sociais`
+- [x] V003 — Criar tabela `tokens_confirmacao`
+- [x] V004 — Criar tabela `refresh_tokens`
+- [x] V005 — Criar tabela `perfis`
+- [x] V006 — Criar tabela `consentimentos`
+- [x] V007 — Criar tabela `logs_autenticacao`
 
-**Critério de aceite:** migrations executam em ordem sem erro; tabelas criadas no PostgreSQL
+**Critério de aceite:** migrations executam em ordem sem erro; tabelas criadas no PostgreSQL ✅
 
 ---
 
