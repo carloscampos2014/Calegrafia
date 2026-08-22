@@ -83,6 +83,23 @@ Calegrafia.sln
 - Ledger de moeda: tabela `transacoes_moeda` **imutável** — apenas INSERT, nunca UPDATE/DELETE
 - **Nunca usar EF Core** — não adicionar pacotes `Microsoft.EntityFrameworkCore.*`
 
+### Armazenamento Local (MAUI)
+
+O app funciona **online e offline**. Estratégia por tipo de dado:
+
+| Dado | Onde | Tecnologia |
+|---|---|---|
+| Token JWT | Seguro, criptografado | `SecureStorage` (MAUI) |
+| Preferências (tema, perfil ativo, Libras) | Simples key-value | `Preferences` (MAUI) |
+| Conteúdo das lições (SVGs) | Cache em disco | `FileSystem.CacheDirectory` |
+| Progresso offline (lições completadas sem internet) | Banco local | SQLite via `sqlite-net-pcl` |
+| Fila de sincronização | Banco local | SQLite — tabela `sync_queue` |
+
+**Regra de sincronização:**
+- Ao retomar conexão, a fila de sync é processada em ordem FIFO
+- Conflitos: versão do servidor prevalece sobre local (servidor é fonte da verdade)
+- Progresso offline nunca é descartado sem confirmação
+
 ---
 
 ## Módulos e Ordem de Implementação
@@ -153,6 +170,55 @@ Os 3 tipos de letra (cursiva, forma, técnica) se aplicam a todas as categorias.
 | Endpoints API | kebab-case | `/api/perfis`, `/api/licoes/{id}/niveis` |
 | Branches Git | kebab-case | `feature/modulo-1-auth-perfis` |
 | Commits | Conventional Commits | `feat(modulo-1): #N descrição` |
+
+---
+
+## Armazenamento Local (Offline)
+
+O app funciona **online e offline**. Estratégia por tipo de dado:
+
+| Dado | Onde | Tecnologia |
+|---|---|---|
+| Token JWT | Seguro, criptografado | `SecureStorage` (MAUI) |
+| Preferências (tema, perfil ativo, Libras) | Simples key-value | `Preferences` (MAUI) |
+| Conteúdo das lições (SVGs) | Cache em disco | `FileSystem.CacheDirectory` |
+| Progresso offline (lições sem internet) | Banco local | SQLite via `sqlite-net-pcl` |
+| Fila de sincronização | Banco local | SQLite — tabela `sync_queue` |
+
+**Regra de sincronização:**
+- Ao retomar conexão, a fila de sync é processada em ordem FIFO
+- Conflitos: versão do servidor prevalece sobre local (servidor é fonte da verdade)
+- Progresso offline nunca é descartado sem confirmação
+
+---
+
+## Princípios de Engenharia
+
+### Arquitetura e Design
+- **Clean Architecture** — dependências apontam para dentro: `Domain` ← `Application` ← `Infrastructure/App`
+- **SOLID** — cada classe tem uma responsabilidade, depende de abstrações, extensível sem modificação
+- **KISS** — preferir a solução mais simples que resolve o problema; complexidade só quando necessária
+- **Clean Code** — nomes descritivos, funções pequenas com único propósito, sem comentários óbvios, sem código morto
+
+### Desenvolvimento
+- **TDD** — escrever o teste antes da implementação; ciclo: teste vermelho → implementar → verde → refatorar
+- **SDD (Spec-Driven Development)** — toda feature começa com spec (`requirements.md` → `design.md` → `tasks.md`) antes de qualquer código. Implementado via Kiro Spec.
+
+### Tratamento de Erros
+- **Nunca engolir exceção silenciosamente** — toda exceção deve ser logada ou propagada
+- Usar `Result<T>` para erros esperados de domínio — não lançar exceção para fluxo normal
+- Exceções de infraestrutura (rede, banco) → capturar, logar e retornar erro amigável ao usuário
+- Nunca expor stack trace ao usuário final — logar internamente, exibir mensagem genérica
+
+### Logging (Serilog)
+- **Serilog** em toda a solution — estruturado, com contexto (`UserId`, `PerfilId`, `OperacaoId`)
+- Níveis obrigatórios:
+  - `Information` — início/fim de operações relevantes (login, lição completada, sync)
+  - `Warning` — situações inesperadas não fatais (sync conflict, retry de API)
+  - `Error` — falhas capturadas com stack trace completo
+  - `Critical` — falhas que impedem o funcionamento (banco inacessível, startup failure)
+- MAUI: logs gravados em `FileSystem.AppDataDirectory/logs/` e enviados ao backend ao sincronizar
+- Backend: logs em arquivo e stdout (capturado pelo `journalctl` da VM)
 
 ---
 
