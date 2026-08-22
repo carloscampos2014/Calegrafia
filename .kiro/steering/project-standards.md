@@ -27,6 +27,7 @@ Consultar antes de implementar qualquer feature. Referência completa: `docs/vis
 |---|---|---|
 | Frontend / App | .NET MAUI | iOS + Android + Windows num único codebase |
 | Backend API | ASP.NET Core | RESTful, hospedado na VM |
+| Documentação da API | Scalar + OpenAPI | Interface moderna via `Scalar.AspNetCore`; disponível em `/scalar` |
 | Banco de dados | PostgreSQL | Rodando localmente na VM |
 | ORM / Acesso a dados | Dapper | Queries SQL explícitas, sem ORM gerador |
 | Migrations | DbUp | Scripts SQL versionados em `src/Calegrafia.Infrastructure/Migrations/` |
