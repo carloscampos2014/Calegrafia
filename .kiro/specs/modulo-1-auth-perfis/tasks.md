@@ -8,14 +8,14 @@
 ## Grupo 1 — Infraestrutura base
 
 ### T-01 — Criar estrutura da solution
-- [ ] Criar `Calegrafia.slnx` (formato moderno XML — requer .NET 10 SDK) com os projetos: `App`, `Api`, `Application`, `Domain`, `Infrastructure`
-- [ ] Configurar referências entre projetos (Domain ← Application ← Infrastructure/Api)
-- [ ] Configurar `Serilog` no `Api` com sink de arquivo e console
-- [ ] Configurar `Scalar.AspNetCore` no `Api` (rota `/scalar`)
-- [ ] Configurar `DbUp` no `Api` para executar migrations no startup
-- [ ] Adicionar `Dapper` e `Npgsql` ao `Infrastructure`
+- [x] Criar `Calegrafia.slnx` (formato moderno XML — requer .NET 10 SDK) com os projetos: `App`, `Api`, `Application`, `Domain`, `Infrastructure`
+- [x] Configurar referências entre projetos (Domain ← Application ← Infrastructure/Api)
+- [x] Configurar `Serilog` no `Api` com sink de arquivo e console
+- [x] Configurar `Scalar.AspNetCore` no `Api` (rota `/scalar`)
+- [x] Configurar `DbUp` no `Api` para executar migrations no startup
+- [x] Adicionar `Dapper` e `Npgsql` ao `Infrastructure`
 
-**Critério de aceite:** `dotnet build Calegrafia.slnx` sem erros; `/scalar` acessível localmente
+**Critério de aceite:** `dotnet build Calegrafia.slnx` sem erros; `/scalar` acessível localmente ✅
 
 ---
 
