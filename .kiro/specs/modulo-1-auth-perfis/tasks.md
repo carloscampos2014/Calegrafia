@@ -102,12 +102,14 @@
 
 ---
 
-### T-09 — Login e MFA (RF-02, RF-05)
-- [ ] `LoginCommand` — verificar email/senha, checar bloqueio, checar MFA, retornar JWT + refresh token
-- [ ] Lógica de bloqueio por tentativas (5 falhas → 15 min)
-- [ ] Fluxo de MFA: login retorna `mfa_required` quando ativo; segundo passo valida TOTP
-- [ ] `LogAutenticacao` gravado em cada tentativa
-- [ ] Teste TDD: login correto, senha errada, conta bloqueada, MFA válido, MFA inválido
+### T-09 — Login e MFA (RF-02, RF-05) ✅
+- [x] `LoginCommand` — verificar email/senha, checar bloqueio, checar MFA, retornar JWT + refresh token
+- [x] Lógica de bloqueio por tentativas (5 falhas → 15 min)
+- [x] Fluxo de MFA: login retorna `mfa_required` quando ativo; segundo passo valida TOTP
+- [x] `LogAutenticacao` gravado em cada tentativa
+- [x] Testes TDD: login correto, senha errada, conta bloqueada, MFA válido, MFA inválido
+
+**Critério de aceite:** testes TDD passando ✅ (71 testes, +12 novos)
 
 ---
 
