@@ -134,10 +134,13 @@
 
 ---
 
-### T-12 — Recuperação e redefinição de senha (RF-10)
-- [ ] `RecuperarSenhaCommand` — gerar token (10 min), enviar email; retornar 200 mesmo se email não existe
-- [ ] `RedefinirSenhaCommand` — validar token, atualizar hash de senha, revogar todos os refresh tokens
-- [ ] Teste TDD: token válido, token expirado, token já usado
+### T-12 — Recuperação e redefinição de senha (RF-10) ✅
+- [x] `RecuperarSenhaHandler` — token 10 min, retorna 200 mesmo sem email (não revela existência)
+- [x] `RedefinirSenhaHandler` — valida token, senha forte, atualiza hash, revoga todos os refresh tokens
+- [x] Handlers separados em arquivos individuais
+- [x] Teste TDD: token válido, token expirado, token já usado, senha fraca, email inexistente, falha silenciosa
+
+**Critério de aceite:** testes TDD passando ✅ (102 testes, +13 novos)
 
 ---
 
