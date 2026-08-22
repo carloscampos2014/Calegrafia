@@ -11,12 +11,113 @@
 # Steering com dados sensíveis de infraestrutura (IP, chave SSH, paths da VM)
 .kiro/steering/vm-oracle.md
 
+# Estado de sessão do Kiro
+.kiro/session-state.md
+
 # Cache de modelos de embedding
 models_cache/
 
 # Banco de dados vetorial local
 data/chroma_db/
 data/index_metadata.json
+
+# Claude Code — arquivos locais de sessão e permissões
+.claude/settings.local.json
+
+# ==============================================
+# .NET / Visual Studio
+# ==============================================
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+artifacts/
+
+# Visual Studio cache
+.vs/
+*.vspscc
+*.vssscc
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+# Build output files
+*.ilk
+*.meta
+*.obj
+*.iobj
+*.pch
+*.pdb
+*.ipdb
+*.pgc
+*.pgd
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp_proj
+*_wpftmp.csproj
+*.tlog
+*.binlog
+
+# Test results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+TestResult.xml
+nunit-*.xml
+*.VisualState.xml
+BenchmarkDotNet.Artifacts/
+
+# Coverage
+coverage*.json
+coverage*.xml
+coverage*.info
+*.coverage
+*.coveragexml
+
+# NuGet
+*.nupkg
+*.snupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+project.lock.json
+project.fragment.lock.json
+
+# Publish
+*.[Pp]ublish.xml
+*.azurePubxml
+*.pubxml
+*.publishproj
+PublishScripts/
+
+# Rider
+*.sln.iml
+
+# Fody
+FodyWeavers.xsd
+
+# Diagnóstico do VSTest
+diag.host.*.txt
+diag.*.txt
 
 # ==============================================
 # Python
@@ -45,23 +146,64 @@ build/
 *.secret
 secrets.*
 
+# appsettings com secrets (locais por ambiente — nunca commitar)
+appsettings.*.json
+!appsettings.json
+!appsettings.Development.json
+
 # ==============================================
 # IDEs e editores
 # ==============================================
-.vscode/settings.json
-.vscode/*.code-workspace
+
+# VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# JetBrains
 .idea/
-*.suo
-*.user
-*.swp
-*~
+
+# Histórico local
+.history/
+.localhistory/
+.vshistory/
 
 # ==============================================
 # Sistema operacional
 # ==============================================
+
+# Windows
 .DS_Store
 Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
 Desktop.ini
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.stackdump
+*.lnk
+
+# macOS
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+
+# ==============================================
+# Node.js
+# ==============================================
+node_modules/
 
 # ==============================================
 # Logs e temporários
