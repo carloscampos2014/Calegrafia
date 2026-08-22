@@ -8,6 +8,9 @@
 # Configurações MCP (contém tokens e endpoints locais)
 .kiro/settings/mcp.json
 
+# Steering com dados sensíveis de infraestrutura (IP, chave SSH, paths da VM)
+.kiro/steering/vm-oracle.md
+
 # Cache de modelos de embedding
 models_cache/
 
@@ -67,3 +70,4 @@ Desktop.ini
 *.tmp
 *.temp
 logs/
+vm-oracle.*
