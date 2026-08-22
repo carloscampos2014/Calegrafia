@@ -1,0 +1,14 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Validação de Conclusão de Task",
+      "trigger": "PostTaskExec",
+      "description": "Verifica se a task concluída atende todos os critérios de aceite do spec antes de marcar como pronta",
+      "action": {
+        "type": "agent",
+        "prompt": "Uma task de spec acabou de ser marcada como concluída. Faça a validação de conclusão:\n\n1. Leia os critérios de aceite da task em `.kiro/specs/<feature>/requirements.md`\n2. Para cada critério de aceite, verifique se há evidência de implementação no código\n3. Verifique se o build passa e os testes estão verdes\n4. Registre o resultado em `.kiro/quality/history.json` se o componente quality_reporting estiver ativo\n\nReporte no formato:\n```\n✅ Task [N] — Validação de Conclusão\nCritérios atendidos: [N]/[total]\n[lista de critérios com ✅ ou ❌]\nBuild: ✅/❌ | Testes: ✅ [N] passando / ❌ [N] falhando\n[Se algum critério não atendido]: Ação necessária: [descrição]\n```\n\nSe a task não atender todos os critérios, marcar como pendente e detalhar o que falta."
+      }
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Build e Testes ao Parar",
+      "trigger": "Stop",
+      "description": "Roda build e testes ao finalizar uma sessão de implementação para garantir que nada quebrou",
+      "action": {
+        "type": "agent",
+        "prompt": "O agente acabou de encerrar uma sessão. Verifique se houve modificações em arquivos de código nesta sessão. Se houve:\n\n1. Rode o comando de build configurado em `.kiro/harness-config.json` (campo `build.command`)\n2. Rode o comando de testes configurado em `.kiro/harness-config.json` (campo `build.test_command`)\n3. Reporte o resultado no formato:\n   - 🔨 Build: ✅ OK / ❌ [N] erros\n   - 🧪 Testes: ✅ [N] passando / ❌ [N] falhando\n\nSe os comandos não estiverem configurados no harness-config.json, apenas informe que o build/teste não foi executado e sugira configurar.\nSe não houve modificações de código nesta sessão, não execute nada."
+      }
+    }
+  ]
+}
