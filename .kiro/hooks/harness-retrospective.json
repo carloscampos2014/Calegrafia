@@ -9,7 +9,7 @@
         "type": "agent",
         "prompt": "Verifique se TODAS as tasks do spec atual estão concluídas. Se NÃO, ignore. Se SIM (esta é a última task):\n1. Leia .kiro/harness-config.json — se retrospective=false, ignore.\n2. Compare tasks.md original (git diff ou contagem) vs tasks realmente executadas.\n3. Identifique scope creep (tasks adicionadas / originais).\n4. Compare critérios de aceite originais vs alterados.\n5. Calcule índice de precisão de planejamento.\n6. Se scope creep > 30%, sinalize alerta.\n7. Gere relatório em .kiro/quality/retrospectives/[spec-name].md.\n8. Alimente a Knowledge Base com lições aprendidas.\n9. Se precisão < 60% em 3 specs consecutivos, sugira revisão do processo."
       },
-      "enabled": false
+      "enabled": true
     }
   ]
 }

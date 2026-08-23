@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calegrafia — Protótipo</title>
+<style>
+  /* ── Reset ─────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #f0f0f0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+
+  /* ── Barra de controle do protótipo ────────────────── */
+  #proto-bar {
+    width: 100%; background: #1a1a2e; color: #eee;
+    display: flex; align-items: center; gap: 8px; padding: 8px 16px;
+    font-size: 12px; position: sticky; top: 0; z-index: 100; flex-wrap: wrap;
+  }
+  #proto-bar strong { color: #a78bfa; }
+  .theme-btn, .device-btn {
+    background: #2d2d4e; border: 1px solid #444; color: #ccc;
+    padding: 4px 10px; border-radius: 20px; cursor: pointer; font-size: 11px;
+    white-space: nowrap;
+  }
+  .theme-btn.active, .device-btn.active { background: #7c3aed; border-color: #a78bfa; color: #fff; }
+  .separator { color: #444; }
+  #breadcrumb { margin-left: auto; color: #888; font-size: 11px; }
+
+  /* ── Container do "dispositivo" ────────────────────── */
+  #device {
+    width: 375px; min-height: 680px; margin: 24px;
+    border-radius: 36px; overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    position: relative; transition: width .3s, min-height .3s;
+  }
+  /* Tablets: bordas menos arredondadas */
+  #device.tablet { border-radius: 20px; }
+  /* Desktop: sem bordas arredondadas, sombra mais suave */
+  #device.desktop { border-radius: 8px; box-shadow: 0 4px 24px rgba(0,0,0,0.2); }
+
+  /* ── Layout desktop: duas colunas ──────────────────── */
+  #device.desktop .screen {
+    flex-direction: row;
+  }
+  #device.desktop .screen-sidebar {
+    width: 340px; min-width: 340px;
+    background: var(--header-bg);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 40px 32px; gap: 16px;
+  }
+  #device.desktop .logo-area {
+    background: transparent; padding: 0;
+  }
+  #device.desktop .logo { font-size: 32px; color: var(--header-text); }
+  #device.desktop .logo-sub { color: var(--header-text); opacity: 0.8; }
+  #device.desktop .screen-body {
+    flex: 1; overflow-y: auto; padding: 48px 48px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  #device.desktop .screen-footer {
+    background: var(--bg); border-top: 1px solid var(--border);
+    padding: 16px 48px;
+  }
+  /* Sidebar só aparece no desktop */
+  .screen-sidebar { display: none; }
+  #device.desktop .screen-sidebar { display: flex; }
+
+  /* logo-area.inline: visível no mobile/tablet, oculta no desktop */
+  .logo-area.inline { display: block; }
+  #device.desktop .logo-area.inline { display: none; }
+  #device.desktop #screen-perfis {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    padding: 32px;
+  }
+  #device.desktop #screen-perfis .logo-area {
+    background: transparent; padding: 0 0 24px;
+    text-align: center;
+  }
+  #device.desktop #screen-perfis .logo {
+    color: var(--primary); font-size: 28px;
+  }
+  #device.desktop #screen-perfis .logo-sub {
+    color: var(--text2);
+  }
+  #device.desktop .profiles-grid {
+    grid-template-columns: repeat(5, 1fr);
+    padding: 0;
+    width: 100%;
+    max-width: 800px;
+    align-items: start;
+  }
+  #device.desktop .profile-card {
+    padding: 24px 16px;
+  }
+  #device.desktop #screen-perfis > div:last-child {
+    margin-top: 20px;
+  }
+
+  /* ── Telas ─────────────────────────────────────────── */
+  .screen {
+    display: none; flex-direction: column;
+    min-height: 680px; padding: 0;
+    animation: fadeIn .2s ease;
+  }
+  .screen.active { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  /* ══════════════════════════════════════════════════════
+     TEMA PADRÃO
+  ══════════════════════════════════════════════════════ */
+  body.padrao { --bg: #ffffff; --bg2: #f8f7ff; --primary: #6c3fc5; --primary-light: #ede9fe;
+    --text: #1e1b4b; --text2: #6b7280; --border: #e5e7eb;
+    --btn: #6c3fc5; --btn-text: #fff; --card-bg: #fff;
+    --header-bg: #6c3fc5; --header-text: #fff;
+    --accent: #f59e0b; --error: #ef4444; --success: #10b981;
+    --radius: 12px; --font-size: 15px; }
+
+  /* ══════════════════════════════════════════════════════
+     TEMA INFANTIL
+  ══════════════════════════════════════════════════════ */
+  body.infantil { --bg: #fffbeb; --bg2: #fef3c7; --primary: #f59e0b; --primary-light: #fef3c7;
+    --text: #78350f; --text2: #92400e; --border: #fcd34d;
+    --btn: #f59e0b; --btn-text: #fff; --card-bg: #fff;
+    --header-bg: #f59e0b; --header-text: #fff;
+    --accent: #6c3fc5; --error: #ef4444; --success: #10b981;
+    --radius: 20px; --font-size: 17px; }
+
+  /* ── Estilos comuns ─────────────────────────────────── */
+  .screen { background: var(--bg); color: var(--text); font-size: var(--font-size); }
+  /* Garantir que grid de perfis não estique os filhos */
+  #screen-perfis { align-items: stretch; }
+  #screen-perfis .profiles-grid { align-items: start; }
+  .screen-header {
+    background: var(--header-bg); color: var(--header-text);
+    padding: 52px 20px 20px; display: flex; align-items: center; gap: 12px;
+  }
+  .screen-header h1 { font-size: 20px; }
+  .back-btn { background: none; border: none; color: var(--header-text); font-size: 22px; cursor: pointer; padding: 0 4px; }
+  .screen-body { flex: 1; padding: 24px 20px; overflow-y: auto; background: var(--bg); }
+  .screen-footer { padding: 16px 20px; background: var(--bg); border-top: 1px solid var(--border); }
+
+  /* Logo */
+  .logo-area { background: var(--header-bg); padding: 32px 20px 24px; text-align: center; }
+  .logo { font-size: 28px; font-weight: 900; color: var(--header-text); letter-spacing: -1px; }
+  body.infantil .logo { font-size: 34px; }
+  .logo-sub { color: var(--header-text); opacity: 0.8; font-size: 12px; margin-top: 2px; }
+
+  /* Form */
+  .form-group { margin-bottom: 16px; }
+  label { display: block; font-size: 13px; font-weight: 600; color: var(--text2); margin-bottom: 6px; }
+  input[type=email], input[type=password], input[type=text] {
+    width: 100%; padding: 12px 14px; border: 2px solid var(--border);
+    border-radius: var(--radius); font-size: var(--font-size);
+    background: var(--bg2); color: var(--text); outline: none; transition: border .2s;
+  }
+  input:focus { border-color: var(--primary); }
+  .checkbox-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
+  .checkbox-row input[type=checkbox] { margin-top: 2px; width: 18px; height: 18px; accent-color: var(--primary); }
+  .checkbox-row label { font-size: 13px; color: var(--text2); margin: 0; }
+  .link { color: var(--primary); text-decoration: none; font-weight: 600; cursor: pointer; }
+
+  /* Botões */
+  .btn { width: 100%; padding: 14px; background: var(--btn); color: var(--btn-text);
+    border: none; border-radius: var(--radius); font-size: var(--font-size);
+    font-weight: 700; cursor: pointer; transition: opacity .2s; }
+  .btn:hover { opacity: .9; }
+  .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); margin-top: 10px; }
+  .btn-sm { padding: 8px 16px; font-size: 13px; width: auto; }
+  .btn-danger { background: var(--error); }
+  .btn-ghost { background: transparent; border: none; color: var(--text2); font-size: 13px; cursor: pointer; text-align: center; width: 100%; margin-top: 8px; }
+
+  /* Divider */
+  .divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; color: var(--text2); font-size: 13px; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* Social btn */
+  .btn-social { display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: var(--radius);
+    background: var(--bg); color: var(--text); font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 10px; }
+
+  /* OTP */
+  .otp-input { font-size: 28px; font-weight: 700; text-align: center; letter-spacing: 12px;
+    padding: 16px; border: 2px solid var(--border); border-radius: var(--radius);
+    background: var(--bg2); width: 100%; }
+  .otp-hint { text-align: center; color: var(--text2); font-size: 13px; margin: 12px 0; }
+
+  /* ── Cards de perfil ─────────────────────────────────── */
+  .profiles-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 24px 20px; }
+  .profile-card {
+    background: var(--card-bg); border: 2px solid var(--border);
+    border-radius: var(--radius); padding: 20px 12px; text-align: center; cursor: pointer;
+    transition: border-color .2s, transform .1s;
+    align-self: start; /* impede esticamento vertical */
+  }
+  .profile-card:hover { border-color: var(--primary); transform: scale(1.02); }
+  body.infantil .profile-card:hover { transform: scale(1.05); }
+  .profile-avatar { width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 10px;
+    display: flex; align-items: center; justify-content: center; font-size: 28px; }
+  body.infantil .profile-avatar { width: 72px; height: 72px; font-size: 34px; }
+  .profile-name { font-weight: 700; font-size: 14px; color: var(--text); }
+  .profile-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-top: 4px; display: inline-block; }
+  .badge-infantil { background: #fef3c7; color: #92400e; }
+  .badge-libras { background: #dbeafe; color: #1d4ed8; }
+  .add-profile { border: 2px dashed var(--border); background: transparent; }
+  .add-profile .profile-avatar { background: var(--primary-light); color: var(--primary); }
+
+  /* Toggle switch */
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .toggle-label { font-weight: 600; font-size: 14px; }
+  .toggle-desc { font-size: 12px; color: var(--text2); }
+  .toggle { position: relative; width: 48px; height: 26px; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider { position: absolute; inset: 0; background: var(--border); border-radius: 26px; cursor: pointer; transition: .3s; }
+  .toggle-slider::before { content: ''; position: absolute; width: 20px; height: 20px; left: 3px; bottom: 3px; background: #fff; border-radius: 50%; transition: .3s; }
+  .toggle input:checked + .toggle-slider { background: var(--primary); }
+  .toggle input:checked + .toggle-slider::before { transform: translateX(22px); }
+
+  /* Info box */
+  .info-box { background: var(--primary-light); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 16px; font-size: 13px; color: var(--primary); }
+  body.infantil .info-box { font-size: 15px; }
+
+  /* Erro */
+  .error-msg { background: #fee2e2; color: var(--error); border-radius: 8px; padding: 10px 14px; font-size: 13px; margin-bottom: 12px; display: none; }
+  .error-msg.show { display: block; }
+
+  /* Sucesso */
+  .success-screen { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; gap: 16px; background: var(--bg); }
+  .success-icon { font-size: 64px; }
+  body.infantil .success-icon { font-size: 80px; animation: bounce 1s infinite; }
+  @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  .success-title { font-size: 22px; font-weight: 800; color: var(--text); }
+  .success-desc { color: var(--text2); font-size: 14px; line-height: 1.5; }
+
+  /* Estrela LGPD */
+  .required { color: var(--error); }
+
+  /* Nav bottom para tela de perfil editando */
+  .action-row { display: flex; gap: 10px; }
+  .action-row .btn { flex: 1; }
+</style>
+</head>
+<body class="padrao">
+
+<!-- ── Barra do protótipo ───────────────────────────── -->
+<div id="proto-bar">
+  <strong>✏️ Calegrafia</strong>
+  <span class="separator">|</span>
+  <span style="color:#888; font-size:11px;">Tema:</span>
+  <button class="theme-btn active" onclick="setTheme('padrao')">Padrão</button>
+  <button class="theme-btn" onclick="setTheme('infantil')">🧒 Infantil</button>
+  <span class="separator">|</span>
+  <span style="color:#888; font-size:11px;">Tela:</span>
+  <button class="device-btn active"      onclick="setDevice(375,  680, this)">📱 iPhone SE</button>
+  <button class="device-btn"            onclick="setDevice(390,  844, this)">📱 iPhone 14</button>
+  <button class="device-btn"            onclick="setDevice(414,  896, this)">📱 iPhone Plus</button>
+  <button class="device-btn"            onclick="setDevice(768, 1024, this)">📱 iPad Mini</button>
+  <button class="device-btn"            onclick="setDevice(820, 1180, this)">📱 iPad Air</button>
+  <button class="device-btn"            onclick="setDevice(360,  780, this)">🤖 Android M</button>
+  <button class="device-btn"            onclick="setDevice(412,  915, this)">🤖 Android L</button>
+  <span class="separator">|</span>
+  <button class="device-btn"            onclick="setDevice(1366, 768, this)">🖥️ Surface</button>
+  <button class="device-btn"            onclick="setDevice(1440, 900, this)">🖥️ HD+</button>
+  <button class="device-btn"            onclick="setDevice(1920, 1080, this)">🖥️ Full HD</button>
+  <button class="device-btn"            onclick="setDevice(2560, 1440, this)">🖥️ 2K</button>
+  <span id="breadcrumb">Login</span>
+</div>
+
+<!-- ── Dispositivo ──────────────────────────────────── -->
+<div id="device">
+
+  <!-- ══ TELA 1: LOGIN ══════════════════════════════════ -->
+  <div class="screen active" id="screen-login">
+    <div class="logo-area inline">
+      <div class="logo">✏️ Calegrafia</div>
+      <div class="logo-sub">Aprenda a escrever com beleza</div>
+    </div>
+    <div class="screen-sidebar">
+      <div class="logo-area">
+        <div class="logo">✏️ Calegrafia</div>
+        <div class="logo-sub">Aprenda a escrever com beleza</div>
+      </div>
+      <p style="color: var(--header-text); opacity:.7; font-size:14px; text-align:center; line-height:1.6;">
+        Treino de caligrafia<br>com stylus e caneta digitalizadora
+      </p>
+    </div>
+    <div class="screen-body">
+      <div class="error-msg" id="login-error">Email ou senha incorretos.</div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="login-email" placeholder="seu@email.com" value="carlos@email.com">
+      </div>
+      <div class="form-group">
+        <label>Senha</label>
+        <input type="password" id="login-senha" placeholder="••••••••" value="Senha123">
+      </div>
+      <button class="btn" onclick="tentarLogin()">Entrar</button>
+      <button class="btn-ghost" onclick="goto('screen-recuperar')">Esqueci minha senha</button>
+      <div class="divider">ou continue com</div>
+      <button class="btn-social" onclick="loginSocial('Google')">
+        <span>🔵</span> Entrar com Google
+      </button>
+      <button class="btn-social" onclick="loginSocial('Apple')">
+        <span>⚫</span> Entrar com Apple
+      </button>
+    </div>
+    <div class="screen-footer" style="text-align:center; font-size:14px;">
+      Não tem conta? <a class="link" onclick="goto('screen-cadastro')">Criar conta</a>
+    </div>
+  </div>
+
+  <!-- ══ TELA 2: MFA ════════════════════════════════════ -->
+  <div class="screen" id="screen-mfa">
+    <div class="screen-header">
+      <button class="back-btn" onclick="goto('screen-login')">←</button>
+      <h1>Verificação</h1>
+    </div>
+    <div class="screen-body" style="text-align:center; padding-top: 40px;">
+      <div style="font-size: 48px; margin-bottom: 16px;">🔐</div>
+      <p style="font-weight:700; font-size:18px; margin-bottom:8px;">Autenticação de dois fatores</p>
+      <p class="otp-hint">Digite o código de 6 dígitos do seu autenticador</p>
+      <input class="otp-input" type="text" maxlength="6" placeholder="000000" id="mfa-code">
+      <div class="error-msg" id="mfa-error" style="margin-top:12px;">Código inválido. Tente novamente.</div>
+      <button class="btn" style="margin-top:20px;" onclick="verificarMfa()">Verificar</button>
+      <button class="btn-ghost" style="margin-top:12px;" onclick="goto('screen-mfa-reset')">
+        Perdi acesso ao autenticador
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ TELA 3: RESET MFA ══════════════════════════════ -->
+  <div class="screen" id="screen-mfa-reset">
+    <div class="screen-header">
+      <button class="back-btn" onclick="goto('screen-mfa')">←</button>
+      <h1>Recuperar autenticador</h1>
+    </div>
+    <div class="screen-body">
+      <div class="info-box">📧 Enviaremos um link de reset para o email da sua conta. O link expira em <strong>10 minutos</strong>.</div>
+      <div class="form-group">
+        <label>Email da conta</label>
+        <input type="email" placeholder="seu@email.com" value="carlos@email.com">
+      </div>
+      <button class="btn" onclick="goto('screen-mfa-reset-ok')">Enviar link de reset</button>
+    </div>
+  </div>
+
+  <!-- ══ TELA 4: RESET MFA OK ═══════════════════════════ -->
+  <div class="screen" id="screen-mfa-reset-ok">
+    <div class="success-screen">
+      <div class="success-icon">📬</div>
+      <div class="success-title">Email enviado!</div>
+      <div class="success-desc">Verifique sua caixa de entrada. O link de reset expira em 10 minutos.</div>
+      <button class="btn" onclick="goto('screen-login')">Voltar ao login</button>
+    </div>
+  </div>
+
+  <!-- ══ TELA 5: CADASTRO ═══════════════════════════════ -->
+  <div class="screen" id="screen-cadastro">
+    <div class="screen-header">
+      <button class="back-btn" onclick="goto('screen-login')">←</button>
+      <h1>Criar conta</h1>
+    </div>
+    <div class="screen-body">
+      <div class="form-group">
+        <label>Email <span class="required">*</span></label>
+        <input type="email" placeholder="seu@email.com">
+      </div>
+      <div class="form-group">
+        <label>Senha <span class="required">*</span></label>
+        <input type="password" placeholder="Mín. 8 caracteres, maiúscula, número">
+      </div>
+      <div class="form-group">
+        <label>Confirmar senha <span class="required">*</span></label>
+        <input type="password" placeholder="••••••••">
+      </div>
+      <div style="border-top: 1px solid var(--border); padding-top: 16px; margin-bottom: 16px;">
+        <p style="font-size:12px; color: var(--text2); margin-bottom: 12px; font-weight:600;">LGPD — Consentimento obrigatório</p>
+        <div class="checkbox-row">
+          <input type="checkbox" id="ck-termos">
+          <label for="ck-termos">Aceito os <a class="link">Termos de Uso</a> da plataforma</label>
+        </div>
+        <div class="checkbox-row">
+          <input type="checkbox" id="ck-politica">
+          <label for="ck-politica">Aceito a <a class="link">Política de Privacidade</a></label>
+        </div>
+      </div>
+      <div class="error-msg show" id="cadastro-error" style="display:none">Aceite os termos para continuar.</div>
+      <button class="btn" onclick="tentarCadastro()">Criar conta</button>
+    </div>
+  </div>
+
+  <!-- ══ TELA 6: CONFIRMAR EMAIL ════════════════════════ -->
+  <div class="screen" id="screen-confirmar-email">
+    <div class="success-screen">
+      <div class="success-icon">✉️</div>
+      <div class="success-title">Verifique seu email</div>
+      <div class="success-desc">Enviamos um link de confirmação para o seu email. Acesse e clique no link para ativar sua conta.</div>
+      <button class="btn" onclick="goto('screen-login')">Ir para o login</button>
+    </div>
+  </div>
+
+  <!-- ══ TELA 7: RECUPERAR SENHA ════════════════════════ -->
+  <div class="screen" id="screen-recuperar">
+    <div class="screen-header">
+      <button class="back-btn" onclick="goto('screen-login')">←</button>
+      <h1>Recuperar senha</h1>
+    </div>
+    <div class="screen-body">
+      <div class="info-box">🔒 Enviaremos um link para redefinir sua senha. O link expira em <strong>10 minutos</strong>.</div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" placeholder="seu@email.com">
+      </div>
+      <button class="btn" onclick="goto('screen-recuperar-ok')">Enviar link</button>
+      <button class="btn-ghost" onclick="goto('screen-login')">Voltar ao login</button>
+    </div>
+  </div>
+
+  <!-- ══ TELA 8: RECUPERAR OK ═══════════════════════════ -->
+  <div class="screen" id="screen-recuperar-ok">
+    <div class="success-screen">
+      <div class="success-icon">📬</div>
+      <div class="success-title">Link enviado!</div>
+      <div class="success-desc">Se este email estiver cadastrado, você receberá as instruções em breve.</div>
+      <button class="btn" onclick="goto('screen-login')">Voltar ao login</button>
+    </div>
+  </div>
+
+  <!-- ══ TELA 9: SELECIONAR PERFIL ══════════════════════ -->
+  <div class="screen" id="screen-perfis">
+    <div class="logo-area" style="padding-bottom: 16px;">
+      <div class="logo" style="font-size:24px;">✏️ Calegrafia</div>
+      <div class="logo-sub">Quem vai treinar agora?</div>
+    </div>
+    <div class="profiles-grid" id="profiles-grid">
+      <!-- Gerado por JS -->
+    </div>
+    <div style="padding: 0 20px 20px; text-align:center; font-size:13px; color: var(--text2);">
+      <a class="link" onclick="goto('screen-login')">Sair da conta</a>
+    </div>
+  </div>
+
+  <!-- ══ TELA 10: CRIAR PERFIL ═════════════════════════ -->
+  <div class="screen" id="screen-criar-perfil">
+    <div class="screen-header">
+      <button class="back-btn" onclick="goto('screen-perfis')">←</button>
+      <h1>Novo perfil</h1>
+    </div>
+    <div class="screen-body">
+      <div class="form-group">
+        <label>Nome do perfil <span class="required">*</span></label>
+        <input type="text" placeholder="Ex: João, Maria..." id="novo-perfil-nome">
+      </div>
+      <div class="form-group" style="text-align:center; margin: 20px 0;">
+        <label style="margin-bottom:12px;">Avatar</label>
+        <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+          <span onclick="selecionarAvatar(this)" class="avatar-opt" style="font-size:36px; cursor:pointer; padding:8px; border-radius:50%; border:3px solid transparent;">🧒</span>
+          <span onclick="selecionarAvatar(this)" class="avatar-opt" style="font-size:36px; cursor:pointer; padding:8px; border-radius:50%; border:3px solid transparent;">👧</span>
+          <span onclick="selecionarAvatar(this)" class="avatar-opt" style="font-size:36px; cursor:pointer; padding:8px; border-radius:50%; border:3px solid transparent;">👦</span>
+          <span onclick="selecionarAvatar(this)" class="avatar-opt selected" style="font-size:36px; cursor:pointer; padding:8px; border-radius:50%; border:3px solid var(--primary);">🧑</span>
+          <span onclick="selecionarAvatar(this)" class="avatar-opt" style="font-size:36px; cursor:pointer; padding:8px; border-radius:50%; border:3px solid transparent;">👨</span>
+          <span onclick="selecionarAvatar(this)" class="avatar-opt" style="font-size:36px; cursor:pointer; padding:8px; border-radius:50%; border:3px solid transparent;">👩</span>
+        </div>
+      </div>
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">🧒 Perfil infantil</div>
+          <div class="toggle-desc">Interface e conteúdo adaptados para crianças</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="ck-infantil" onchange="toggleInfantilWarning()">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div id="aviso-parental" style="display:none; margin: 12px 0;">
+        <div class="checkbox-row">
+          <input type="checkbox" id="ck-parental">
+          <label for="ck-parental">Sou o responsável legal por este menor e autorizo o uso da plataforma</label>
+        </div>
+      </div>
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">🤟 Usar Libras no ditado</div>
+          <div class="toggle-desc">Vídeos em Libras no lugar do áudio</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="ck-libras">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+    <div class="screen-footer">
+      <button class="btn" onclick="criarPerfil()">Criar perfil</button>
+    </div>
+  </div>
+
+  <!-- ══ TELA 11: EDITAR PERFIL ════════════════════════ -->
+  <div class="screen" id="screen-editar-perfil">
+    <div class="screen-header">
+      <button class="back-btn" onclick="goto('screen-perfis')">←</button>
+      <h1>Editar perfil</h1>
+    </div>
+    <div class="screen-body">
+      <div class="form-group">
+        <label>Nome do perfil</label>
+        <input type="text" id="edit-nome" value="Carlos">
+      </div>
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">🧒 Perfil infantil</div>
+          <div class="toggle-desc">Interface e conteúdo adaptados para crianças</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="edit-infantil">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">🤟 Usar Libras no ditado</div>
+          <div class="toggle-desc">Vídeos em Libras no lugar do áudio</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="edit-libras">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+    <div class="screen-footer">
+      <div class="action-row">
+        <button class="btn btn-outline" onclick="goto('screen-perfis')">Cancelar</button>
+        <button class="btn" onclick="goto('screen-perfis')">Salvar</button>
+      </div>
+      <button class="btn btn-ghost" style="color:var(--error); margin-top:12px;" onclick="confirmarExcluir()">
+        Excluir perfil
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ TELA 12: CONFIRMAR EXCLUSÃO ══════════════════ -->
+  <div class="screen" id="screen-confirmar-exclusao">
+    <div class="screen-header">
+      <button class="back-btn" onclick="goto('screen-editar-perfil')">←</button>
+      <h1>Excluir perfil</h1>
+    </div>
+    <div class="screen-body" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; padding-top:40px; text-align:center;">
+      <div style="font-size:52px;">⚠️</div>
+      <p style="font-weight:800; font-size:18px; color:var(--error);">Esta ação é irreversível</p>
+      <p style="color:var(--text2); font-size:14px; line-height:1.5;">Todo o progresso, moedas e XP deste perfil serão removidos permanentemente.</p>
+    </div>
+    <div class="screen-footer">
+      <button class="btn btn-danger" onclick="goto('screen-perfis')">Sim, excluir perfil</button>
+      <button class="btn btn-ghost" onclick="goto('screen-editar-perfil')">Cancelar</button>
+    </div>
+  </div>
+
+</div><!-- /device -->
+
+<script>
+// ── Estado do app ──────────────────────────────────────
+const state = {
+  theme: 'padrao',
+  perfilAtual: null,
+  perfis: [
+    { nome: 'Carlos', avatar: '🧑', isInfantil: false, usaLibras: false },
+    { nome: 'Sofia', avatar: '👧', isInfantil: true, usaLibras: false },
+    { nome: 'João', avatar: '👦', isInfantil: true, usaLibras: true },
+  ]
+};
+
+// ── Navegação ──────────────────────────────────────────
+function goto(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const names = {
+    'screen-login': 'Login', 'screen-mfa': 'MFA', 'screen-mfa-reset': 'Reset MFA',
+    'screen-mfa-reset-ok': 'Reset OK', 'screen-cadastro': 'Cadastro',
+    'screen-confirmar-email': 'Confirmar Email', 'screen-recuperar': 'Recuperar Senha',
+    'screen-recuperar-ok': 'Recuperar OK', 'screen-perfis': 'Selecionar Perfil',
+    'screen-criar-perfil': 'Criar Perfil', 'screen-editar-perfil': 'Editar Perfil',
+    'screen-confirmar-exclusao': 'Excluir Perfil'
+  };
+  document.getElementById('breadcrumb').textContent = names[id] || id;
+
+  if (id === 'screen-perfis') renderPerfis();
+}
+
+// ── Tema ───────────────────────────────────────────────
+function setTheme(t) {
+  state.theme = t;
+  document.body.className = t;
+  document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.theme-btn[onclick="setTheme('${t}')"]`).classList.add('active');
+}
+
+// ── Login ──────────────────────────────────────────────
+function tentarLogin() {
+  const email = document.getElementById('login-email').value;
+  const senha = document.getElementById('login-senha').value;
+  const err = document.getElementById('login-error');
+  err.style.display = 'none';
+
+  if (!email || !senha) { err.style.display = 'block'; return; }
+
+  // Simular MFA ativo
+  if (email.includes('mfa')) { goto('screen-mfa'); return; }
+  goto('screen-perfis');
+}
+
+function loginSocial(p) {
+  alert(`Autenticando com ${p}...\n(simulação)`);
+  setTimeout(() => goto('screen-perfis'), 500);
+}
+
+// ── MFA ────────────────────────────────────────────────
+function verificarMfa() {
+  const code = document.getElementById('mfa-code').value;
+  const err = document.getElementById('mfa-error');
+  err.style.display = 'none';
+  if (code === '123456') { goto('screen-perfis'); }
+  else { err.style.display = 'block'; }
+}
+
+// ── Cadastro ───────────────────────────────────────────
+function tentarCadastro() {
+  const termos = document.getElementById('ck-termos').checked;
+  const politica = document.getElementById('ck-politica').checked;
+  const err = document.getElementById('cadastro-error');
+  if (!termos || !politica) { err.style.display = 'block'; return; }
+  err.style.display = 'none';
+  goto('screen-confirmar-email');
+}
+
+// ── Perfis ─────────────────────────────────────────────
+function renderPerfis() {
+  const grid = document.getElementById('profiles-grid');
+  grid.innerHTML = '';
+
+  state.perfis.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = 'profile-card';
+    const color = p.isInfantil ? '#fef3c7' : '#ede9fe';
+    card.innerHTML = `
+      <div class="profile-avatar" style="background:${color}">${p.avatar}</div>
+      <div class="profile-name">${p.nome}</div>
+      ${p.isInfantil ? '<span class="profile-badge badge-infantil">🧒 Infantil</span>' : ''}
+      ${p.usaLibras ? '<span class="profile-badge badge-libras">🤟 Libras</span>' : ''}
+    `;
+    card.onclick = () => selecionarPerfil(i);
+
+    // Long press para editar
+    let timer;
+    card.addEventListener('mousedown', () => { timer = setTimeout(() => editarPerfil(i), 600); });
+    card.addEventListener('mouseup', () => clearTimeout(timer));
+    card.addEventListener('mouseleave', () => clearTimeout(timer));
+
+    grid.appendChild(card);
+  });
+
+  // Botão adicionar (se < 5)
+  if (state.perfis.length < 5) {
+    const add = document.createElement('div');
+    add.className = 'profile-card add-profile';
+    add.innerHTML = `<div class="profile-avatar" style="background:var(--primary-light); color:var(--primary)">+</div><div class="profile-name" style="color:var(--primary)">Novo perfil</div>`;
+    add.onclick = () => goto('screen-criar-perfil');
+    grid.appendChild(add);
+  }
+}
+
+function selecionarPerfil(i) {
+  state.perfilAtual = i;
+  const p = state.perfis[i];
+  // Mudar tema de acordo com o perfil
+  setTheme(p.isInfantil ? 'infantil' : 'padrao');
+  alert(`Perfil "${p.nome}" selecionado!\nTema: ${p.isInfantil ? 'Infantil 🎨' : 'Padrão'}\n\nEm seguida: tela principal do app.`);
+}
+
+function editarPerfil(i) {
+  state.perfilAtual = i;
+  const p = state.perfis[i];
+  document.getElementById('edit-nome').value = p.nome;
+  document.getElementById('edit-infantil').checked = p.isInfantil;
+  document.getElementById('edit-libras').checked = p.usaLibras;
+  goto('screen-editar-perfil');
+}
+
+function criarPerfil() {
+  const nome = document.getElementById('novo-perfil-nome').value.trim();
+  if (!nome) { alert('Digite um nome para o perfil.'); return; }
+
+  const isInfantil = document.getElementById('ck-infantil').checked;
+  const parental = document.getElementById('ck-parental');
+  if (isInfantil && parental && !parental.checked) {
+    alert('É necessário confirmar o consentimento parental.'); return;
+  }
+
+  const avatares = ['🧒','👧','👦','🧑','👨','👩'];
+  const sel = document.querySelector('.avatar-opt.selected');
+  const avatar = sel ? sel.textContent : '🧑';
+
+  state.perfis.push({
+    nome, avatar, isInfantil,
+    usaLibras: document.getElementById('ck-libras').checked
+  });
+  document.getElementById('novo-perfil-nome').value = '';
+  document.getElementById('ck-infantil').checked = false;
+  document.getElementById('ck-libras').checked = false;
+  document.getElementById('aviso-parental').style.display = 'none';
+  goto('screen-perfis');
+}
+
+function confirmarExcluir() {
+  goto('screen-confirmar-exclusao');
+}
+
+function toggleInfantilWarning() {
+  const checked = document.getElementById('ck-infantil').checked;
+  document.getElementById('aviso-parental').style.display = checked ? 'block' : 'none';
+}
+
+function selecionarAvatar(el) {
+  document.querySelectorAll('.avatar-opt').forEach(a => {
+    a.classList.remove('selected');
+    a.style.border = '3px solid transparent';
+  });
+  el.classList.add('selected');
+  el.style.border = '3px solid var(--primary)';
+}
+
+// ── Init ───────────────────────────────────────────────
+renderPerfis();
+
+// ── Dispositivo ────────────────────────────────────────
+function setDevice(w, h, btn) {
+  const device = document.getElementById('device');
+  const isDesktop = w >= 1280;
+  const isTablet  = w >= 768 && !isDesktop;
+
+  device.style.width = w + 'px';
+  device.style.minHeight = isDesktop ? Math.min(h, window.innerHeight - 80) + 'px' : h + 'px';
+  device.style.maxHeight = isDesktop ? (window.innerHeight - 80) + 'px' : 'none';
+
+  device.classList.remove('tablet', 'desktop');
+  if (isDesktop) device.classList.add('desktop');
+  else if (isTablet) device.classList.add('tablet');
+
+  // Ajustar colunas da grade de perfis somente fora do desktop (desktop via CSS)
+  if (!isDesktop) {
+    document.querySelector('.profiles-grid').style.gridTemplateColumns =
+      isTablet ? 'repeat(3, 1fr)' : '1fr 1fr';
+  } else {
+    document.querySelector('.profiles-grid').style.gridTemplateColumns = '';
+  }
+
+  document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
