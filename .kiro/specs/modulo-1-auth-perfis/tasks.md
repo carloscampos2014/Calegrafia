@@ -157,12 +157,14 @@
 
 ## Grupo 5 — Use cases de perfis
 
-### T-14 — CRUD de perfis (RF-07, RF-08, RF-09)
-- [ ] `CriarPerfilCommand` — validar limite de 5 perfis, gravar consentimento parental se IsInfantil
-- [ ] `ListarPerfisQuery` — retornar todos os perfis da conta autenticada
-- [ ] `EditarPerfilCommand` — atualizar nome, avatar, flags
-- [ ] `ExcluirPerfilCommand` — exigir confirmação, remover perfil e dados associados
-- [ ] Teste TDD: criar 5 perfis (limite), criar 6º (erro), excluir com dados
+### T-14 — CRUD de perfis (RF-07, RF-08, RF-09) ✅
+- [x] `CriarPerfilCommand/Handler` — limite 5, consentimento parental obrigatório para IsInfantil
+- [x] `ListarPerfisQuery/Handler` — retorna lista mapeada para PerfilResult
+- [x] `EditarPerfilCommand/Handler` — verifica ownership antes de editar
+- [x] `ExcluirPerfilCommand/Handler` — verifica ownership antes de excluir
+- [x] Testes TDD: 15 testes (132 total)
+
+**Critério de aceite:** testes TDD passando ✅
 
 ---
 
