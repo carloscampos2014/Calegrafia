@@ -144,12 +144,14 @@
 
 ---
 
-### T-13 — MFA: ativar, desativar e reset (RF-05, RF-11)
-- [ ] `AtivarMfaCommand` — gerar secret, retornar QR code; confirmar com código TOTP
-- [ ] `DesativarMfaCommand` — exigir código TOTP válido, limpar secret
-- [ ] `ResetMfaSolicitarCommand` — enviar email com link de reset (10 min)
-- [ ] `ResetMfaConfirmarCommand` — validar token, desativar MFA, revogar todos os refresh tokens
-- [ ] Teste TDD: ativar, desativar, reset com token válido/expirado
+### T-13 — MFA: ativar, desativar e reset (RF-05, RF-11) ✅
+- [x] `AtivarMfaCommand/Handler` — passo 1: gera QR code; passo 2: valida TOTP e persiste secret criptografado
+- [x] `DesativarMfaCommand/Handler` — exige TOTP válido antes de desativar
+- [x] `ResetMfaSolicitarCommand/Handler` — silencioso se email inválido ou MFA não ativo; token 10 min
+- [x] `ResetMfaConfirmarCommand/Handler` — valida token, desativa MFA, revoga todos os refresh tokens
+- [x] Testes TDD: 15 testes cobrindo todos os cenários
+
+**Critério de aceite:** testes TDD passando ✅ (117 testes, +15 novos)
 
 ---
 
