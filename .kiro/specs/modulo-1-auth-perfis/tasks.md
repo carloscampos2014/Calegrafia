@@ -179,9 +179,16 @@
 
 ## Grupo 7 — Controllers e MAUI
 
-### T-16 — Controllers da API
-- [ ] `AuthController` — mapear todos os endpoints de autenticação (RF-01 a RF-11)
-- [ ] `PerfisController` — mapear endpoints de perfis (RF-07 a RF-09)
+### T-16 — Controllers da API ✅
+- [x] `AuthController` — 14 endpoints (RF-01 a RF-11)
+- [x] `PerfisController` — 4 endpoints CRUD com `[Authorize]`
+- [x] `ContaController` — 2 endpoints LGPD (RF-13)
+- [x] JWT RS256 + `UseAuthentication/Authorization` no pipeline
+- [x] Rate limiting login: 10 req/min por IP
+- [x] DI completo — todos handlers e repositórios registrados
+- [x] `ProvedorSocialRepository` — ON CONFLICT DO NOTHING
+
+**Critério de aceite:** todos os endpoints visíveis no Scalar ✅ (build OK, 138 testes)
 - [ ] `ContaController` — mapear endpoints LGPD (RF-13)
 - [ ] Configurar autenticação JWT no `Program.cs`
 - [ ] Rate limiting no endpoint de login (10 req/min por IP)
