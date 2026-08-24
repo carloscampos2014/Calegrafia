@@ -170,9 +170,13 @@
 
 ## Grupo 6 — Use cases LGPD
 
-### T-15 — Exportação e exclusão de conta (RF-13)
-- [ ] `ExportarDadosCommand` — enfileirar job, retornar 202; job gera JSON e envia por email
-- [ ] `ExcluirContaCommand` — verificar senha, excluir dados, anonimizar logs, revogar tokens
+### T-15 — Exportação e exclusão de conta (RF-13) ✅
+- [x] `ExportarDadosCommand/Handler` — retorna 202 imediatamente; job async gera JSON e envia por email
+- [x] `ExcluirContaCommand/Handler` — verifica senha, exclui perfis, anonimiza logs, revoga tokens
+- [x] Namespace `GestaoContas` para evitar colisão com entidade `Conta`
+- [x] Testes TDD: 6 testes (senha incorreta, conta não encontrada, revogar tokens, excluir perfis)
+
+**Critério de aceite:** testes TDD passando ✅ (138 testes)
 - [ ] Teste TDD: exportar dados, excluir conta com senha correta/incorreta
 
 ---
