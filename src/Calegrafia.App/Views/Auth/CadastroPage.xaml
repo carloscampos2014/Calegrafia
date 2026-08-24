@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Calegrafia.App.Views.Auth.CadastroPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:Calegrafia.App.ViewModels.Auth"
+    Title="Criar Conta">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="32,32,32,32"
+            Spacing="0">
+
+            <Label
+                Style="{StaticResource Headline}"
+                Text="Criar Conta"
+                Margin="0,0,0,32" />
+
+            <!-- Email -->
+            <Label Text="Email" FontSize="13" Margin="0,0,0,4" />
+            <Entry
+                Text="{Binding Email}"
+                Placeholder="seu@email.com"
+                Keyboard="Email"
+                ReturnType="Next"
+                SemanticProperties.Hint="Campo de email para cadastro"
+                Margin="0,0,0,16" />
+
+            <!-- Senha -->
+            <Label Text="Senha" FontSize="13" Margin="0,0,0,4" />
+            <Entry
+                Text="{Binding Senha}"
+                Placeholder="Mínimo 6 caracteres"
+                IsPassword="True"
+                ReturnType="Next"
+                SemanticProperties.Hint="Campo de senha — mínimo 6 caracteres"
+                Margin="0,0,0,16" />
+
+            <!-- Confirmar Senha -->
+            <Label Text="Confirmar Senha" FontSize="13" Margin="0,0,0,4" />
+            <Entry
+                Text="{Binding ConfirmarSenha}"
+                Placeholder="Repita a senha"
+                IsPassword="True"
+                ReturnType="Done"
+                SemanticProperties.Hint="Confirme sua senha"
+                Margin="0,0,0,24" />
+
+            <!-- Termos de Uso -->
+            <HorizontalStackLayout Spacing="12" Margin="0,0,0,12">
+                <CheckBox
+                    IsChecked="{Binding AceitouTermos}"
+                    SemanticProperties.Description="Aceitar os Termos de Uso" />
+                <Label
+                    Text="Li e aceito os Termos de Uso"
+                    FontSize="14"
+                    VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <!-- Política de Privacidade -->
+            <HorizontalStackLayout Spacing="12" Margin="0,0,0,24">
+                <CheckBox
+                    IsChecked="{Binding AceitouPoliticaPrivacidade}"
+                    SemanticProperties.Description="Aceitar a Política de Privacidade" />
+                <Label
+                    Text="Li e aceito a Política de Privacidade"
+                    FontSize="14"
+                    VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <!-- Mensagem de erro -->
+            <Label
+                Text="{Binding ErrorMessage}"
+                TextColor="Red"
+                FontSize="13"
+                IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotEmptyConverter}}"
+                HorizontalTextAlignment="Center"
+                Margin="0,0,0,12" />
+
+            <!-- Botão Criar Conta -->
+            <Button
+                Text="Criar Conta"
+                Command="{Binding CadastrarCommand}"
+                IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
+                SemanticProperties.Description="Botão para criar conta"
+                Margin="0,0,0,16" />
+
+            <!-- Loading -->
+            <ActivityIndicator
+                IsRunning="{Binding IsBusy}"
+                IsVisible="{Binding IsBusy}"
+                HorizontalOptions="Center"
+                Margin="0,0,0,16" />
+
+            <!-- Voltar -->
+            <Button
+                Text="Já tenho uma conta"
+                Command="{Binding VoltarCommand}"
+                BackgroundColor="Transparent"
+                TextColor="{StaticResource Primary}"
+                BorderColor="{StaticResource Primary}"
+                BorderWidth="1"
+                SemanticProperties.Description="Voltar para a tela de login" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Calegrafia.App.Views.Auth.MfaPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:Calegrafia.App.ViewModels.Auth"
+    Title="Verificação em Duas Etapas"
+    Shell.NavBarIsVisible="False">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="32,48,32,32"
+            Spacing="0"
+            VerticalOptions="Center">
+
+            <Label
+                Style="{StaticResource Headline}"
+                Text="Verificação"
+                Margin="0,0,0,8" />
+
+            <Label
+                Text="Abra seu aplicativo autenticador e informe o código de 6 dígitos."
+                FontSize="14"
+                HorizontalTextAlignment="Center"
+                Margin="0,0,0,32" />
+
+            <!-- Código TOTP -->
+            <Label Text="Código de verificação" FontSize="13" Margin="0,0,0,4" />
+            <Entry
+                Text="{Binding Codigo}"
+                Placeholder="000000"
+                Keyboard="Numeric"
+                MaxLength="6"
+                ReturnType="Done"
+                ReturnCommand="{Binding VerificarCommand}"
+                SemanticProperties.Hint="Campo para o código de 6 dígitos do autenticador"
+                HorizontalTextAlignment="Center"
+                FontSize="24"
+                Margin="0,0,0,24" />
+
+            <!-- Mensagem de erro -->
+            <Label
+                Text="{Binding ErrorMessage}"
+                TextColor="Red"
+                FontSize="13"
+                IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotEmptyConverter}}"
+                HorizontalTextAlignment="Center"
+                Margin="0,0,0,12" />
+
+            <!-- Botão Verificar -->
+            <Button
+                Text="Verificar"
+                Command="{Binding VerificarCommand}"
+                IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
+                SemanticProperties.Description="Botão para verificar o código MFA"
+                Margin="0,0,0,16" />
+
+            <!-- Loading -->
+            <ActivityIndicator
+                IsRunning="{Binding IsBusy}"
+                IsVisible="{Binding IsBusy}"
+                HorizontalOptions="Center"
+                Margin="0,0,0,24" />
+
+            <!-- Separador -->
+            <BoxView
+                HeightRequest="1"
+                BackgroundColor="{StaticResource Gray200}"
+                Margin="0,0,0,16" />
+
+            <!-- Link reset MFA -->
+            <Label
+                Text="Perdi o acesso ao autenticador"
+                TextColor="{StaticResource Primary}"
+                FontSize="13"
+                HorizontalOptions="Center">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ResetMfaCommand}" />
+                </Label.GestureRecognizers>
+            </Label>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

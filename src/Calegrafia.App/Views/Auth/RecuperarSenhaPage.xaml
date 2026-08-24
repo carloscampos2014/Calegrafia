@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Calegrafia.App.Views.Auth.RecuperarSenhaPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:Calegrafia.App.ViewModels.Auth"
+    Title="Recuperar Senha">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="32,48,32,32"
+            Spacing="0"
+            VerticalOptions="Center">
+
+            <Label
+                Style="{StaticResource Headline}"
+                Text="Recuperar Senha"
+                Margin="0,0,0,8" />
+
+            <Label
+                Text="Informe seu email e enviaremos instruções para redefinir sua senha."
+                FontSize="14"
+                HorizontalTextAlignment="Center"
+                Margin="0,0,0,32" />
+
+            <!-- Email -->
+            <Label Text="Email" FontSize="13" Margin="0,0,0,4" />
+            <Entry
+                Text="{Binding Email}"
+                Placeholder="seu@email.com"
+                Keyboard="Email"
+                ReturnType="Done"
+                ReturnCommand="{Binding EnviarCommand}"
+                IsEnabled="{Binding Enviado, Converter={StaticResource InverseBoolConverter}}"
+                SemanticProperties.Hint="Campo de email para recuperação de senha"
+                Margin="0,0,0,24" />
+
+            <!-- Mensagem de retorno (sucesso ou validação) -->
+            <Border
+                BackgroundColor="{StaticResource Secondary}"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 8"
+                Padding="12,10"
+                Margin="0,0,0,16"
+                IsVisible="{Binding Mensagem, Converter={StaticResource StringNotEmptyConverter}}">
+                <Label
+                    Text="{Binding Mensagem}"
+                    TextColor="{StaticResource Tertiary}"
+                    FontSize="13"
+                    HorizontalTextAlignment="Center" />
+            </Border>
+
+            <!-- Botão Enviar -->
+            <Button
+                Text="Enviar instruções"
+                Command="{Binding EnviarCommand}"
+                IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
+                IsVisible="{Binding Enviado, Converter={StaticResource InverseBoolConverter}}"
+                SemanticProperties.Description="Botão para enviar email de recuperação de senha"
+                Margin="0,0,0,16" />
+
+            <!-- Loading -->
+            <ActivityIndicator
+                IsRunning="{Binding IsBusy}"
+                IsVisible="{Binding IsBusy}"
+                HorizontalOptions="Center"
+                Margin="0,0,0,16" />
+
+            <!-- Voltar -->
+            <Button
+                Text="Voltar ao login"
+                Command="{Binding VoltarCommand}"
+                BackgroundColor="Transparent"
+                TextColor="{StaticResource Primary}"
+                BorderColor="{StaticResource Primary}"
+                BorderWidth="1"
+                SemanticProperties.Description="Voltar para a tela de login" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

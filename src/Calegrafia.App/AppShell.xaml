@@ -3,12 +3,13 @@
     x:Class="Calegrafia.App.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:Calegrafia.App"
-    Title="Calegrafia.App">
+    xmlns:auth="clr-namespace:Calegrafia.App.Views.Auth"
+    Title="Calegrafia">
 
+    <!-- Rota padrão: tela de login -->
     <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+        Route="login"
+        ContentTemplate="{DataTemplate auth:LoginPage}"
+        Title="Entrar" />
 
 </Shell>
