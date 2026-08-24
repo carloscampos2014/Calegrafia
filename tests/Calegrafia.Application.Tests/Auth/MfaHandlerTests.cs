@@ -5,6 +5,7 @@ using Calegrafia.Domain.Interfaces;
 using Calegrafia.Domain.ValueObjects;
 using FluentAssertions;
 using NSubstitute;
+using ContaTipo = Calegrafia.Domain.Entities.Conta;
 
 namespace Calegrafia.Application.Tests.Auth;
 
@@ -17,10 +18,10 @@ public sealed class AtivarMfaHandlerTests
 
     private AtivarMfaHandler CriarHandler() => new(_contaRepo, _totpService);
 
-    private Conta CriarContaAtiva()
+    private ContaTipo CriarContaAtiva()
     {
         var email = Email.Create("user@test.com").Value!;
-        var conta = Conta.Criar(email, "hash").Value!;
+        var conta = ContaTipo.Criar(email, "hash").Value!;
         conta.Ativar();
         return conta;
     }
@@ -28,7 +29,7 @@ public sealed class AtivarMfaHandlerTests
     [Fact]
     public async Task Handle_ContaNaoEncontrada_RetornaFalha()
     {
-        _contaRepo.ObterPorIdAsync(Arg.Any<Guid>()).Returns((Conta?)null);
+        _contaRepo.ObterPorIdAsync(Arg.Any<Guid>()).Returns((ContaTipo?)null);
 
         var result = await CriarHandler().HandleAsync(new AtivarMfaCommand(Guid.NewGuid()));
 
@@ -90,7 +91,7 @@ public sealed class AtivarMfaHandlerTests
             new AtivarMfaConfirmarCommand(conta.Id, "SECRETBASE32", "123456"));
 
         result.IsSuccess.Should().BeTrue();
-        await _contaRepo.Received(1).AtualizarAsync(Arg.Any<Conta>());
+        await _contaRepo.Received(1).AtualizarAsync(Arg.Any<ContaTipo>());
     }
 }
 
@@ -103,10 +104,10 @@ public sealed class DesativarMfaHandlerTests
 
     private DesativarMfaHandler CriarHandler() => new(_contaRepo, _totpService);
 
-    private Conta CriarContaComMfa()
+    private ContaTipo CriarContaComMfa()
     {
         var email = Email.Create("user@test.com").Value!;
-        var conta = Conta.Criar(email, "hash").Value!;
+        var conta = ContaTipo.Criar(email, "hash").Value!;
         conta.Ativar();
         conta.AtivarMfa("SECRET_CRIPTOGRAFADO");
         return conta;
@@ -115,7 +116,7 @@ public sealed class DesativarMfaHandlerTests
     [Fact]
     public async Task Handle_ContaNaoEncontrada_RetornaFalha()
     {
-        _contaRepo.ObterPorIdAsync(Arg.Any<Guid>()).Returns((Conta?)null);
+        _contaRepo.ObterPorIdAsync(Arg.Any<Guid>()).Returns((ContaTipo?)null);
 
         var result = await CriarHandler().HandleAsync(
             new DesativarMfaCommand(Guid.NewGuid(), "123456"));
@@ -127,7 +128,7 @@ public sealed class DesativarMfaHandlerTests
     public async Task Handle_MfaNaoAtivo_RetornaFalha()
     {
         var email = Email.Create("user@test.com").Value!;
-        var conta = Conta.Criar(email, "hash").Value!;
+        var conta = ContaTipo.Criar(email, "hash").Value!;
         conta.Ativar();
         _contaRepo.ObterPorIdAsync(Arg.Any<Guid>()).Returns(conta);
 
@@ -165,7 +166,7 @@ public sealed class DesativarMfaHandlerTests
             new DesativarMfaCommand(conta.Id, "123456"));
 
         result.IsSuccess.Should().BeTrue();
-        await _contaRepo.Received(1).AtualizarAsync(Arg.Any<Conta>());
+        await _contaRepo.Received(1).AtualizarAsync(Arg.Any<ContaTipo>());
     }
 }
 
@@ -206,7 +207,7 @@ public sealed class ResetMfaHandlerTests
     public async Task Solicitar_ContaSemMfaAtivo_RetornaSucessoSilencioso()
     {
         var email = Email.Create("user@test.com").Value!;
-        var conta = Conta.Criar(email, "hash").Value!;
+        var conta = ContaTipo.Criar(email, "hash").Value!;
         conta.Ativar(); // MFA não ativo
         _contaRepo.ObterPorEmailAsync(Arg.Any<Email>()).Returns(conta);
 
@@ -222,7 +223,7 @@ public sealed class ResetMfaHandlerTests
     public async Task Solicitar_ContaComMfaAtivo_EnviaEmail()
     {
         var email = Email.Create("user@test.com").Value!;
-        var conta = Conta.Criar(email, "hash").Value!;
+        var conta = ContaTipo.Criar(email, "hash").Value!;
         conta.Ativar();
         conta.AtivarMfa("secret");
         _contaRepo.ObterPorEmailAsync(Arg.Any<Email>()).Returns(conta);
@@ -273,7 +274,7 @@ public sealed class ResetMfaHandlerTests
         _tokenRepo.ObterPorTokenAsync(Arg.Any<string>()).Returns(token);
 
         var email = Email.Create("user@test.com").Value!;
-        var conta = Conta.Criar(email, "hash").Value!;
+        var conta = ContaTipo.Criar(email, "hash").Value!;
         conta.Ativar();
         conta.AtivarMfa("secret");
         _contaRepo.ObterPorIdAsync(contaId).Returns(conta);
@@ -282,9 +283,12 @@ public sealed class ResetMfaHandlerTests
             new ResetMfaConfirmarCommand("token-reset"));
 
         result.IsSuccess.Should().BeTrue();
-        await _contaRepo.Received(1).AtualizarAsync(Arg.Any<Conta>());
+        await _contaRepo.Received(1).AtualizarAsync(Arg.Any<ContaTipo>());
         await _tokenRepo.Received(1).MarcarComoUsadoAsync(token.Id, Arg.Any<CancellationToken>());
         await _refreshTokenRepo.Received(1).RevogarTodosPorContaAsync(
             Arg.Any<Guid>(), Arg.Any<CancellationToken>());
     }
 }
+
+
+

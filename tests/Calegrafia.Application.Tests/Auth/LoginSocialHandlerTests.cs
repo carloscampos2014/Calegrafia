@@ -5,6 +5,7 @@ using Calegrafia.Domain.Interfaces;
 using Calegrafia.Domain.ValueObjects;
 using FluentAssertions;
 using NSubstitute;
+using ContaTipo = Calegrafia.Domain.Entities.Conta;
 
 namespace Calegrafia.Application.Tests.Auth;
 
@@ -74,11 +75,11 @@ public sealed class LoginSocialHandlerTests
     public async Task Handle_NovoUsuarioGoogle_CriarContaAtivada()
     {
         _googleProvider.ValidarTokenAsync(Arg.Any<string>()).Returns(UserInfoValido());
-        _contaRepo.ObterPorEmailAsync(Arg.Any<Email>()).Returns((Conta?)null);
+        _contaRepo.ObterPorEmailAsync(Arg.Any<Email>()).Returns((ContaTipo?)null);
         var novaContaId = Guid.NewGuid();
-        _contaRepo.CriarAsync(Arg.Any<Conta>()).Returns(novaContaId);
+        _contaRepo.CriarAsync(Arg.Any<ContaTipo>()).Returns(novaContaId);
         var email = Email.Create("social@test.com").Value!;
-        var conta = Conta.Criar(email).Value!;
+        var conta = ContaTipo.Criar(email).Value!;
         conta.Ativar();
         _contaRepo.ObterPorIdAsync(novaContaId).Returns(conta);
         _jwtService.GerarAccessToken(Arg.Any<Guid>(), Arg.Any<string>()).Returns("access");
@@ -87,18 +88,18 @@ public sealed class LoginSocialHandlerTests
         var result = await CriarHandler().HandleAsync(ComandoGoogle());
 
         result.IsSuccess.Should().BeTrue();
-        await _contaRepo.Received(1).CriarAsync(Arg.Any<Conta>());
+        await _contaRepo.Received(1).CriarAsync(Arg.Any<ContaTipo>());
     }
 
     [Fact]
     public async Task Handle_NovoUsuario_VincularProvedor()
     {
         _googleProvider.ValidarTokenAsync(Arg.Any<string>()).Returns(UserInfoValido());
-        _contaRepo.ObterPorEmailAsync(Arg.Any<Email>()).Returns((Conta?)null);
+        _contaRepo.ObterPorEmailAsync(Arg.Any<Email>()).Returns((ContaTipo?)null);
         var novaContaId = Guid.NewGuid();
-        _contaRepo.CriarAsync(Arg.Any<Conta>()).Returns(novaContaId);
+        _contaRepo.CriarAsync(Arg.Any<ContaTipo>()).Returns(novaContaId);
         var email = Email.Create("social@test.com").Value!;
-        var conta = Conta.Criar(email).Value!;
+        var conta = ContaTipo.Criar(email).Value!;
         conta.Ativar();
         _contaRepo.ObterPorIdAsync(novaContaId).Returns(conta);
         _jwtService.GerarAccessToken(Arg.Any<Guid>(), Arg.Any<string>()).Returns("access");
@@ -116,7 +117,7 @@ public sealed class LoginSocialHandlerTests
     public async Task Handle_UsuarioExistente_NaoCriaNovaConta()
     {
         var email = Email.Create("existente@test.com").Value!;
-        var contaExistente = Conta.Criar(email).Value!;
+        var contaExistente = ContaTipo.Criar(email).Value!;
         contaExistente.Ativar();
 
         _googleProvider.ValidarTokenAsync(Arg.Any<string>()).Returns(UserInfoValido("existente@test.com"));
@@ -127,14 +128,14 @@ public sealed class LoginSocialHandlerTests
         var result = await CriarHandler().HandleAsync(ComandoGoogle());
 
         result.IsSuccess.Should().BeTrue();
-        await _contaRepo.DidNotReceive().CriarAsync(Arg.Any<Conta>());
+        await _contaRepo.DidNotReceive().CriarAsync(Arg.Any<ContaTipo>());
     }
 
     [Fact]
     public async Task Handle_UsuarioExistente_VinculaProvedorSeNaoVinculado()
     {
         var email = Email.Create("existente@test.com").Value!;
-        var contaExistente = Conta.Criar(email).Value!;
+        var contaExistente = ContaTipo.Criar(email).Value!;
         contaExistente.Ativar();
 
         _googleProvider.ValidarTokenAsync(Arg.Any<string>()).Returns(UserInfoValido("existente@test.com"));
@@ -154,7 +155,7 @@ public sealed class LoginSocialHandlerTests
     public async Task Handle_LoginSocialValido_RetornaTokens()
     {
         var email = Email.Create("social@test.com").Value!;
-        var conta = Conta.Criar(email).Value!;
+        var conta = ContaTipo.Criar(email).Value!;
         conta.Ativar();
 
         _googleProvider.ValidarTokenAsync(Arg.Any<string>()).Returns(UserInfoValido());
@@ -169,3 +170,5 @@ public sealed class LoginSocialHandlerTests
         result.Value.AccessToken.Should().Be("access-social");
     }
 }
+
+

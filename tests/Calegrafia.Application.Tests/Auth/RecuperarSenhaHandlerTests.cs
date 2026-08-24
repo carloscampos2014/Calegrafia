@@ -5,6 +5,7 @@ using Calegrafia.Domain.Interfaces;
 using Calegrafia.Domain.ValueObjects;
 using FluentAssertions;
 using NSubstitute;
+using ContaTipo = Calegrafia.Domain.Entities.Conta;
 
 namespace Calegrafia.Application.Tests.Auth;
 
@@ -32,7 +33,7 @@ public sealed class RecuperarSenhaHandlerTests
     [Fact]
     public async Task Handle_EmailNaoCadastrado_RetornaSucessoSemEmail()
     {
-        _contaRepo.ObterPorEmailAsync(Arg.Any<Email>()).Returns((Conta?)null);
+        _contaRepo.ObterPorEmailAsync(Arg.Any<Email>()).Returns((ContaTipo?)null);
 
         var result = await CriarHandler().HandleAsync(new RecuperarSenhaCommand("naoexiste@test.com"));
 
@@ -47,7 +48,7 @@ public sealed class RecuperarSenhaHandlerTests
     public async Task Handle_EmailValido_CriaTokenEEnviaEmail()
     {
         var email = Email.Create("user@test.com").Value!;
-        var conta = Conta.Criar(email).Value!;
+        var conta = ContaTipo.Criar(email).Value!;
         conta.Ativar();
         _contaRepo.ObterPorEmailAsync(Arg.Any<Email>()).Returns(conta);
         _tokenRepo.CriarAsync(Arg.Any<Guid>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<DateTime>())
@@ -67,7 +68,7 @@ public sealed class RecuperarSenhaHandlerTests
     public async Task Handle_FalhaNoEnvioEmail_AindaRetornaSucesso()
     {
         var email = Email.Create("user@test.com").Value!;
-        var conta = Conta.Criar(email).Value!;
+        var conta = ContaTipo.Criar(email).Value!;
         conta.Ativar();
         _contaRepo.ObterPorEmailAsync(Arg.Any<Email>()).Returns(conta);
         _tokenRepo.CriarAsync(Arg.Any<Guid>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<DateTime>())
@@ -176,7 +177,7 @@ public sealed class RedefinirSenhaHandlerTests
         _tokenRepo.ObterPorTokenAsync(Arg.Any<string>()).Returns(token);
 
         var email = Email.Create("user@test.com").Value!;
-        var conta = Conta.Criar(email, "hash_antigo").Value!;
+        var conta = ContaTipo.Criar(email, "hash_antigo").Value!;
         conta.Ativar();
         _contaRepo.ObterPorIdAsync(contaId).Returns(conta);
         _hasher.Hash(Arg.Any<string>()).Returns("hash_novo");
@@ -190,3 +191,5 @@ public sealed class RedefinirSenhaHandlerTests
             Arg.Any<Guid>(), Arg.Any<CancellationToken>());
     }
 }
+
+

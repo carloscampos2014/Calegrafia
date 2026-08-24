@@ -5,6 +5,7 @@ using Calegrafia.Domain.Interfaces;
 using Calegrafia.Domain.ValueObjects;
 using FluentAssertions;
 using NSubstitute;
+using ContaTipo = Calegrafia.Domain.Entities.Conta;
 
 namespace Calegrafia.Application.Tests.Auth;
 
@@ -90,7 +91,7 @@ public sealed class ConfirmarEmailHandlerTests
         _tokenRepo.ObterPorTokenAsync(Arg.Any<string>()).Returns(token);
 
         var email = Email.Create("user@test.com").Value!;
-        var conta = Conta.Criar(email).Value!;
+        var conta = ContaTipo.Criar(email).Value!;
         _contaRepo.ObterPorIdAsync(contaId).Returns(conta);
 
         var result = await CriarHandler().HandleAsync(new ConfirmarEmailCommand("token-valido"));
@@ -106,7 +107,7 @@ public sealed class ConfirmarEmailHandlerTests
         _tokenRepo.ObterPorTokenAsync(Arg.Any<string>()).Returns(token);
 
         var email = Email.Create("user@test.com").Value!;
-        var conta = Conta.Criar(email).Value!;
+        var conta = ContaTipo.Criar(email).Value!;
         _contaRepo.ObterPorIdAsync(contaId).Returns(conta);
 
         await CriarHandler().HandleAsync(new ConfirmarEmailCommand("token-valido"));
@@ -122,7 +123,7 @@ public sealed class ConfirmarEmailHandlerTests
         _tokenRepo.ObterPorTokenAsync(Arg.Any<string>()).Returns(token);
 
         var email = Email.Create("user@test.com").Value!;
-        var conta = Conta.Criar(email).Value!;
+        var conta = ContaTipo.Criar(email).Value!;
         _contaRepo.ObterPorIdAsync(contaId).Returns(conta);
 
         await CriarHandler().HandleAsync(new ConfirmarEmailCommand("token-valido"));
@@ -130,3 +131,5 @@ public sealed class ConfirmarEmailHandlerTests
         await _contaRepo.Received(1).AtualizarAsync(Arg.Any<Domain.Entities.Conta>());
     }
 }
+
+

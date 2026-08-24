@@ -4,6 +4,7 @@ using Calegrafia.Domain.Interfaces;
 using Calegrafia.Domain.ValueObjects;
 using FluentAssertions;
 using NSubstitute;
+using ContaTipo = Calegrafia.Domain.Entities.Conta;
 
 namespace Calegrafia.Application.Tests.Auth;
 
@@ -135,3 +136,4 @@ public sealed class CadastrarContaHandlerTests
             Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>());
     }
 }
+

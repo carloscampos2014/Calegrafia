@@ -5,6 +5,7 @@ using Calegrafia.Domain.Interfaces;
 using Calegrafia.Domain.ValueObjects;
 using FluentAssertions;
 using NSubstitute;
+using ContaTipo = Calegrafia.Domain.Entities.Conta;
 
 namespace Calegrafia.Application.Tests.Auth;
 
@@ -75,7 +76,7 @@ public sealed class RefreshTokenHandlerTests
         _refreshTokenRepo.ObterPorTokenAsync(Arg.Any<string>()).Returns(token);
 
         var email = Email.Create("user@test.com").Value!;
-        var conta = Conta.Criar(email).Value!;
+        var conta = ContaTipo.Criar(email).Value!;
         conta.Ativar();
         _contaRepo.ObterPorIdAsync(contaId).Returns(conta);
         _jwtService.GerarAccessToken(Arg.Any<Guid>(), Arg.Any<string>()).Returns("novo-access");
@@ -94,7 +95,7 @@ public sealed class RefreshTokenHandlerTests
         _refreshTokenRepo.ObterPorTokenAsync(Arg.Any<string>()).Returns(token);
 
         var email = Email.Create("user@test.com").Value!;
-        var conta = Conta.Criar(email).Value!;
+        var conta = ContaTipo.Criar(email).Value!;
         conta.Ativar();
         _contaRepo.ObterPorIdAsync(contaId).Returns(conta);
         _jwtService.GerarAccessToken(Arg.Any<Guid>(), Arg.Any<string>()).Returns("novo-access");
@@ -115,7 +116,7 @@ public sealed class RefreshTokenHandlerTests
         _refreshTokenRepo.ObterPorTokenAsync(Arg.Any<string>()).Returns(token);
 
         var email = Email.Create("user@test.com").Value!;
-        var conta = Conta.Criar(email).Value!;
+        var conta = ContaTipo.Criar(email).Value!;
         conta.Ativar();
         _contaRepo.ObterPorIdAsync(contaId).Returns(conta);
         _jwtService.GerarAccessToken(Arg.Any<Guid>(), Arg.Any<string>()).Returns("novo-access");
@@ -192,3 +193,5 @@ public sealed class LogoutHandlerTests
         await _refreshTokenRepo.Received(1).RevogarTodosPorContaAsync(contaId);
     }
 }
+
+

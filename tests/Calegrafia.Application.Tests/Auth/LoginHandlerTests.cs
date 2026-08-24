@@ -5,6 +5,7 @@ using Calegrafia.Domain.Interfaces;
 using Calegrafia.Domain.ValueObjects;
 using FluentAssertions;
 using NSubstitute;
+using ContaTipo = Calegrafia.Domain.Entities.Conta;
 
 namespace Calegrafia.Application.Tests.Auth;
 
@@ -27,10 +28,10 @@ public sealed class LoginHandlerTests
         string? codigoMfa = null) =>
         new(email, senha, codigoMfa, "127.0.0.1", "TestAgent");
 
-    private Conta CriarContaAtiva(string email = "user@test.com")
+    private ContaTipo CriarContaAtiva(string email = "user@test.com")
     {
         var emailVo = Email.Create(email).Value!;
-        var conta = Conta.Criar(emailVo, "hash").Value!;
+        var conta = ContaTipo.Criar(emailVo, "hash").Value!;
         conta.Ativar();
         return conta;
     }
@@ -49,7 +50,7 @@ public sealed class LoginHandlerTests
     [Fact]
     public async Task Handle_ContaNaoEncontrada_RetornaMensagemGenerica()
     {
-        _contaRepo.ObterPorEmailAsync(Arg.Any<Email>()).Returns((Conta?)null);
+        _contaRepo.ObterPorEmailAsync(Arg.Any<Email>()).Returns((ContaTipo?)null);
 
         var result = await CriarHandler().HandleAsync(ComandoValido());
 
@@ -64,7 +65,7 @@ public sealed class LoginHandlerTests
     public async Task Handle_ContaNaoConfirmada_RetornaFalha()
     {
         var emailVo = Email.Create("user@test.com").Value!;
-        var contaPendente = Conta.Criar(emailVo, "hash").Value!; // status Pendente
+        var contaPendente = ContaTipo.Criar(emailVo, "hash").Value!; // status Pendente
         _contaRepo.ObterPorEmailAsync(Arg.Any<Email>()).Returns(contaPendente);
 
         var result = await CriarHandler().HandleAsync(ComandoValido());
@@ -219,3 +220,5 @@ public sealed class LoginHandlerTests
             conta.Id, "refresh-token", Arg.Any<DateTime>(), Arg.Any<string?>());
     }
 }
+
+
